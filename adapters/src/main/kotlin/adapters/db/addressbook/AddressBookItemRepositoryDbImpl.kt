@@ -62,4 +62,21 @@ class AddressBookItemRepositoryDbImpl(
                 AddressBookItems.id eq id
             } > 0
     }
+
+    @RequiresTransactionContext
+    override suspend fun count() = dbConnector.existingTransaction {
+        AddressBookItems
+            .selectAll()
+            .count()
+    }
+
+    @RequiresTransactionContext
+    override suspend fun hasEntityWithId(id: Long) = dbConnector.existingTransaction {
+        AddressBookItems
+            .select {
+                AddressBookItems.id eq id
+            }
+            .limit(1)
+            .count() > 0
+    }
 }

@@ -15,7 +15,6 @@ import io.ktor.features.CORS
 import io.ktor.features.CallId
 import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
-import io.ktor.features.DefaultHeaders
 import io.ktor.features.StatusPages
 import io.ktor.features.callIdMdc
 import io.ktor.http.HttpHeaders
@@ -43,10 +42,6 @@ class AppBootstrap(
         val databaseErrorInspector by application.inject<DatabaseErrorInspector>()
 
         application.apply {
-            install(DefaultHeaders) {
-                header(HttpHeaders.UserAgent, "SomeUserAgent/NeedsToBeChanged")
-            }
-
             install(AutoHeadResponse)
 
             // ktor 0.9.5 added MDC support for coroutines and this allows us to print call request id for the entire

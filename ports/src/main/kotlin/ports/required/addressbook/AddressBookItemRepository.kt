@@ -14,4 +14,10 @@ interface AddressBookItemRepository {
 
     @RequiresTransactionContext
     suspend fun deleteById(id: Long): Boolean
+
+    @RequiresTransactionContext
+    suspend fun count(): Int
+
+    @RequiresTransactionContext
+    suspend fun hasEntityWithId(id: Long): Boolean
 }

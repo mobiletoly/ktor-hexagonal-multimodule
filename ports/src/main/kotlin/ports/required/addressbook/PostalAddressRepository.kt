@@ -20,4 +20,7 @@ interface PostalAddressRepository {
 
     @RequiresTransactionContext
     suspend fun deleteByAddressBookItemId(id: Long): Boolean
+
+    @RequiresTransactionContext
+    suspend fun count(): Int
 }

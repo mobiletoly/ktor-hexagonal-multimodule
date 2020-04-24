@@ -9,6 +9,7 @@ import shared.util.d
 import mu.KotlinLogging
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 
 private val logger = KotlinLogging.logger { }
 
@@ -83,5 +84,12 @@ class PostalAddressRepositoryDbImpl(
             .deleteWhere {
                 PostalAddresses.addressBookItemId eq id
             } > 0
+    }
+
+    @RequiresTransactionContext
+    override suspend fun count() = dbConnector.existingTransaction {
+        PostalAddresses
+            .selectAll()
+            .count()
     }
 }

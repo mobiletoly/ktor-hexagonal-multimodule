@@ -65,6 +65,9 @@ class AddressBookServiceImpl(
         addressBookItemRequest: SaveAddressBookItemRequestDto
     ): AddressBookItemResponseDto = txService.newTransaction {
         logger.d("updateAddressBookItem") { "Update AddressBookItem by id=$id: $addressBookItemRequest" }
+        if (! addressBookItemRepository.hasEntityWithId(id = id)) {
+            throw AddressBookItemNotFoundException(searchCriteria = "id=$id")
+        }
         val addressBookItemToSave = addressBookItemRequest.toAddressBookItem(id = id)
         val savedAddressBookItem = addressBookItemRepository.upsert(entity = addressBookItemToSave)
         val address = addressBookItemRequest.address
