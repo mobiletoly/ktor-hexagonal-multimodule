@@ -71,6 +71,15 @@ class PostalAddressRepositoryDbImpl(
     }
 
     @RequiresTransactionContext
+    override suspend fun getAll() = dbConnector.existingTransaction {
+        PostalAddresses
+            .selectAll()
+            .map {
+                PostalAddress.fromResultRow(it)
+            }
+    }
+
+    @RequiresTransactionContext
     override suspend fun deleteById(id: Long) = dbConnector.existingTransaction {
         PostalAddresses
             .deleteWhere {

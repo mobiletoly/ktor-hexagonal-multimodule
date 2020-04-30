@@ -1,5 +1,6 @@
 package adapters
 
+import adapters.clients.randomperson.RandomPersonHttpClient
 import adapters.config.AppConfig
 import adapters.config.ConfigRepository
 import adapters.config.ConfigRepositoryImpl
@@ -11,6 +12,8 @@ import adapters.db.TransactionServiceDbImpl
 import adapters.db.addressbook.AddressBookItemRepositoryDbImpl
 import adapters.db.addressbook.PostalAddressRepositoryDbImpl
 import adapters.db.postgresql.PgErrorInspector
+import adapters.http.HttpClientFactory
+import adapters.http.HttpClientFactoryImpl
 import adapters.routes.AddressBookItemRoute
 import adapters.routes.HealthCheckRoute
 import adapters.services.healthcheck.HealthCheckService
@@ -23,6 +26,7 @@ import io.ktor.application.Application
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
 import ports.provided.util.DateSupplier
+import ports.required.randomperson.RandomPersonClient
 import javax.sql.DataSource
 
 // Adapter modules for Dependency Injection
@@ -67,6 +71,14 @@ val adapterModule = module(createdAtStart = true) {
     }
     single<PostalAddressRepository> {
         PostalAddressRepositoryDbImpl(dbConnector = get())
+    }
+
+    // Clients
+    single<HttpClientFactory> {
+        HttpClientFactoryImpl()
+    }
+    single<RandomPersonClient> {
+        RandomPersonHttpClient(appConfig = get(), httpClientFactory = get())
     }
 
     // API adapters.routes

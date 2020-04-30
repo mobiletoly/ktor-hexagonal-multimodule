@@ -10,7 +10,7 @@ interface AddressBookItemRepository {
     suspend fun upsert(entity: AddressBookItem): AddressBookItem
 
     @RequiresTransactionContext
-    suspend fun getAll(): Map<Long, AddressBookItem>
+    suspend fun getAll(): Collection<AddressBookItem>
 
     @RequiresTransactionContext
     suspend fun deleteById(id: Long): Boolean

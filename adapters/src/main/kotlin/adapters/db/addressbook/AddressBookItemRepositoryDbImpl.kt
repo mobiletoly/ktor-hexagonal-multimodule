@@ -49,10 +49,8 @@ class AddressBookItemRepositoryDbImpl(
         AddressBookItems
             .selectAll()
             .map {
-                val item = AddressBookItem.fromResultRow(it)
-                item.id!! to item
+                AddressBookItem.fromResultRow(it)
             }
-            .toMap()
     }
 
     @RequiresTransactionContext

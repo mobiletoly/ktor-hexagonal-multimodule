@@ -9,33 +9,33 @@ import ports.required.addressbook.AddressBookItem
 import ports.required.addressbook.Gender
 import ports.required.addressbook.PostalAddress
 
-internal fun GenderDto.toGenderColumnType(): Gender {
+fun GenderDto.toGender(): Gender {
     return when (this) {
         GenderDto.FEMALE -> Gender.FEMALE
         GenderDto.MALE -> Gender.MALE
     }
 }
 
-internal fun Gender.toGenderDto(): GenderDto {
+fun Gender.toGenderDto(): GenderDto {
     return when (this) {
         Gender.FEMALE -> GenderDto.FEMALE
         Gender.MALE -> GenderDto.MALE
     }
 }
 
-internal fun SaveAddressBookItemRequestDto.toAddressBookItem(
+fun SaveAddressBookItemRequestDto.buildAddressBookItem(
     id: Long?
 ) = AddressBookItem(
     id = id,
     firstName = firstName,
     lastName = lastName,
-    gender = gender?.toGenderColumnType(),
+    gender = gender?.toGender(),
     age = age,
     phoneNumber = phoneNumber,
     email = email
 )
 
-internal fun SavePostalAddressRequestDto.toPostalAddress(
+fun SavePostalAddressRequestDto.buildPostalAddress(
     id: Long? = null,
     addressBookItemId: Long
 ) = PostalAddress(
@@ -48,7 +48,7 @@ internal fun SavePostalAddressRequestDto.toPostalAddress(
     country = country
 )
 
-internal fun PostalAddress.toResponse() =
+fun PostalAddress.toResponse() =
     PostalAddressResponseDto(
         address1 = address1,
         address2 = address2,

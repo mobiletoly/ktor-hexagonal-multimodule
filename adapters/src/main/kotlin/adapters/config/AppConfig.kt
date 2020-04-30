@@ -30,6 +30,10 @@ class AppConfig(configRepository: ConfigRepository) {
         hikariConfig
     }
 
+    val randomPerson by lazy {
+        RandomPerson.create(config = config.getConfig("random-person"))
+    }
+
     class Deployment private constructor(private val config: Config) {
         val env: String by lazy {
             config.getString("env")
@@ -42,6 +46,18 @@ class AppConfig(configRepository: ConfigRepository) {
         }
         companion object {
             internal fun create(config: Config) = Deployment(config = config)
+        }
+    }
+
+    class RandomPerson private constructor(private val config: Config) {
+        val fetchUrl: String by lazy {
+            config.getString("fetch-url")
+        }
+        val apiKey: String by lazy {
+            config.getString("api-key")
+        }
+        companion object {
+            internal fun create(config: Config) = RandomPerson(config = config)
         }
     }
 }

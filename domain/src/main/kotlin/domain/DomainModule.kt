@@ -10,6 +10,7 @@ val domainModule = module(createdAtStart = true) {
         AddressBookServiceImpl(
             addressBookItemRepository = get(),
             postalAddressRepository = get(),
+            randomPersonClient = get(),
             txService = get()
         )
     }

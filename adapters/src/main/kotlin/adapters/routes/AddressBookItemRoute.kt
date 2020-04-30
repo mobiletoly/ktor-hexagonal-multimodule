@@ -25,14 +25,19 @@ class AddressBookItemRoute(application: Application) {
 
     init {
         application.routing {
-            route("/addressBookItems") {
-                // Query entity by id
+            route("addressBookItems") {
+                // Query all address book items
+                get {
+                    val addressBookItemsResponse = addressBookService.queryAllAddressBookItems()
+                    call.respond(HttpStatusCode.OK, addressBookItemsResponse)
+                }
+                // Query address book item by id
                 get("{id}") {
                     val id = call.longParameter("id")
                     val addressBookItemResponse = addressBookService.queryAddressBookItem(id = id)
                     call.respond(HttpStatusCode.OK, addressBookItemResponse)
                 }
-                // Create new entity
+                // Create new address book item
                 post {
                     val addressBookItemRequest = call.receiveValidated<SaveAddressBookItemRequestDto>()
                     val addressBookItemResponse = addressBookService.addAddressBookItem(
@@ -41,7 +46,7 @@ class AddressBookItemRoute(application: Application) {
                     call.response.header(HttpHeaders.Location, "${call.request.uri}/${addressBookItemResponse.id}")
                     call.respond(HttpStatusCode.Created, addressBookItemResponse)
                 }
-                // Update entity by id
+                // Update existing address book item by id
                 put("{id}") {
                     val id = call.longParameter("id")
                     val addressBookItemRequest = call.receiveValidated<SaveAddressBookItemRequestDto>()
@@ -51,10 +56,16 @@ class AddressBookItemRoute(application: Application) {
                     )
                     call.respond(HttpStatusCode.OK, addressBookItemResponse)
                 }
+                // Delete existing address book item by id
                 delete("{id}") {
                     val id = call.longParameter("id")
                     addressBookService.deleteAddressBookItem(id = id)
                     call.respond(HttpStatusCode.NoContent, "")
+                }
+                // Generate new random address book item
+                post("random") {
+                    val addressBookItemResponse = addressBookService.addRandomAddressBookItem()
+                    call.respond(HttpStatusCode.OK, addressBookItemResponse)
                 }
             }
         }

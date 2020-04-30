@@ -16,6 +16,9 @@ interface PostalAddressRepository {
     suspend fun getByIds(ids: Collection<Long>): Map<Long, PostalAddress>
 
     @RequiresTransactionContext
+    suspend fun getAll(): Collection<PostalAddress>
+
+    @RequiresTransactionContext
     suspend fun deleteById(id: Long): Boolean
 
     @RequiresTransactionContext
