@@ -275,7 +275,7 @@ private fun validateRequestDtoMatchesResponseDto(
 
 @OptIn(RequiresTransactionContext::class)
 private suspend fun Application.countAddressBookItems(): Int {
-    return get<DatabaseConnector>().newTransaction {
+    return get<DatabaseConnector>().transaction {
         get<AddressBookItemRepository>().count()
     }
 }

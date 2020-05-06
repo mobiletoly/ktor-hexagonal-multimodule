@@ -16,4 +16,9 @@ class TransactionServiceDbImpl(
     override suspend fun <T> existingTransaction(block: suspend () -> T) = dbConnector.existingTransaction {
         block()
     }
+
+    @RequiresTransactionContext
+    override suspend fun <T> transaction(block: suspend () -> T) = dbConnector.transaction {
+        block()
+    }
 }

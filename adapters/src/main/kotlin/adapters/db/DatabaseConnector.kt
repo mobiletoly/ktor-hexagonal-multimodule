@@ -56,4 +56,18 @@ class DatabaseConnector(
             block(this)
         }
     }
+
+    @RequiresTransactionContext
+    suspend fun <T> transaction(block: suspend (tx: Transaction) -> T): T {
+        val tx = TransactionManager.currentOrNull()
+        return if (tx == null || tx.connection.isClosed) {
+            newSuspendedTransaction(db = db) {
+                block(this)
+            }
+        } else {
+            tx.suspendedTransaction {
+                block(this)
+            }
+        }
+    }
 }

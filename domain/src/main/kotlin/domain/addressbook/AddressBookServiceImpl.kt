@@ -23,7 +23,7 @@ class AddressBookServiceImpl(
 ) : AddressBookService {
 
     @OptIn(RequiresTransactionContext::class)
-    override suspend fun queryAllAddressBookItems() = txService.newTransaction {
+    override suspend fun queryAllAddressBookItems() = txService.transaction {
         logger.d("queryAllAddressBookItems") { "Query all AddressBookItem records" }
         val addressBookItems = addressBookItemRepository.getAll()
         val postalAddressesMap = postalAddressRepository.getAll()
@@ -42,7 +42,7 @@ class AddressBookServiceImpl(
     @Throws(AddressBookItemNotFoundException::class)
     override suspend fun queryAddressBookItem(
         id: Long
-    ): AddressBookItemResponseDto = txService.newTransaction {
+    ): AddressBookItemResponseDto = txService.transaction {
         logger.d("queryAddressBookItem") { "Query AddressBookItem by id=$id" }
         val addressBookItem = getAddressBookItemById(id = id)
         val postalAddress = postalAddressRepository.getByAddressBookItemIdOrNull(id = addressBookItem.id!!)
@@ -53,7 +53,7 @@ class AddressBookServiceImpl(
     @Throws(AddressBookItemNotFoundException::class)
     override suspend fun addAddressBookItem(
         addressBookItemRequest: SaveAddressBookItemRequestDto
-    ): AddressBookItemResponseDto = txService.newTransaction {
+    ): AddressBookItemResponseDto = txService.transaction {
         logger.d("addAddressBookItem") { "Add AddressBookItem: $addressBookItemRequest" }
         val addressBookItemToSave = addressBookItemRequest.buildAddressBookItem(id = null)
         val addressBookItem = addressBookItemRepository.upsert(entity = addressBookItemToSave)
@@ -80,7 +80,7 @@ class AddressBookServiceImpl(
     override suspend fun addRandomAddressBookItem(): AddressBookItemResponseDto {
         logger.d("addRandomAddressBookItem") { "Add single random AddressBookItem record" }
         val randomPerson = randomPersonClient.fetchRandomPerson()
-        return txService.newTransaction {
+        return txService.transaction {
             val addressBookItemToSave = randomPerson.buildAddressBookItem()
             val addressBookItem = addressBookItemRepository.upsert(addressBookItemToSave)
             val postalAddressToSave = randomPerson.buildPostalAddress(addressBookItemId = addressBookItem.id!!)
@@ -94,7 +94,7 @@ class AddressBookServiceImpl(
     override suspend fun updateAddressBookItem(
         id: Long,
         addressBookItemRequest: SaveAddressBookItemRequestDto
-    ): AddressBookItemResponseDto = txService.newTransaction {
+    ): AddressBookItemResponseDto = txService.transaction {
         logger.d("updateAddressBookItem") { "Update AddressBookItem by id=$id: $addressBookItemRequest" }
         if (! addressBookItemRepository.hasEntityWithId(id = id)) {
             throw AddressBookItemNotFoundException(searchCriteria = "id=$id")
@@ -102,24 +102,25 @@ class AddressBookServiceImpl(
         val addressBookItemToSave = addressBookItemRequest.buildAddressBookItem(id = id)
         val savedAddressBookItem = addressBookItemRepository.upsert(entity = addressBookItemToSave)
         val address = addressBookItemRequest.address
-        val postalAddressResponse = if (address == null) {
-            postalAddressRepository.deleteByAddressBookItemId(id = id)
-            null
-        } else {
-            val existingPostalAddress = postalAddressRepository.getByAddressBookItemIdOrNull(id = id)
-            val postalAddressToSave = address.buildPostalAddress(
-                id = existingPostalAddress?.id,
-                addressBookItemId = savedAddressBookItem.id!!
-            )
-            postalAddressRepository.upsert(entity = postalAddressToSave)
-            postalAddressToSave.toResponse()
-        }
+        val postalAddressResponse =
+            if (address == null) {
+                postalAddressRepository.deleteByAddressBookItemId(id = id)
+                null
+            } else {
+                val existingPostalAddress = postalAddressRepository.getByAddressBookItemIdOrNull(id = id)
+                val postalAddressToSave = address.buildPostalAddress(
+                    id = existingPostalAddress?.id,
+                    addressBookItemId = savedAddressBookItem.id!!
+                )
+                postalAddressRepository.upsert(entity = postalAddressToSave)
+                postalAddressToSave.toResponse()
+            }
         savedAddressBookItem.toResponse(postalAddress = postalAddressResponse)
     }
 
     @RequiresTransactionContext
-    private suspend fun getAddressBookItemById(id: Long): AddressBookItem = txService.existingTransaction {
-        addressBookItemRepository.getByIdOrNull(id = id)
+    private suspend fun getAddressBookItemById(id: Long): AddressBookItem {
+        return addressBookItemRepository.getByIdOrNull(id = id)
             ?: throw AddressBookItemNotFoundException(searchCriteria = "id=$id")
     }
 }
