@@ -1,0 +1,231 @@
+{
+	"info": {
+		"_postman_id": "02e633f8-2987-442a-b4bf-f4cf8ad46f96",
+		"name": "AddressBook",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Healthcheck",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add AddressBook item",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"firstName\": \"Toly\",\n\t\"lastName\": \"Pochkin\",\n\t\"gender\": \"MALE\",\n\t\"age\": 40,\n\t\"phoneNumber\": \"999-777-8888\",\n\t\"email\": \"some-email-address-for-toly@some-email-domain.com\",\n\t\"address\": {\n\t\t\"address1\": \"123 Awesome Street, 777\",\n\t\t\"city\": \"Seattle\",\n\t\t\"state\": \"WA\",\n\t\t\"country\": \"USA\"\n\t}\n}\n"
+				},
+				"url": {
+					"raw": "http://localhost:8080/addressBookItems",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"addressBookItems"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update AddressBook item",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"firstName\": \"Tollly\",\n\t\"lastName\": \"Pochkinnn\",\n\t\"gender\": \"MALE\",\n\t\"age\": 39,\n\t\"phoneNumber\": \"999-777-8888\",\n\t\"email\": \"some-email-address-for-toly@some-email-domain.com\",\n\t\"address\": {\n\t\t\"address1\": \"123 Awesome Street, 777\",\n\t\t\"city\": \"Seattle\",\n\t\t\"state\": \"WA\",\n\t\t\"country\": \"USA\"\n\t}\n}\n"
+				},
+				"url": {
+					"raw": "http://localhost:8080/addressBookItems/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"addressBookItems",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get AddressBook item",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/addressBookItems/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"addressBookItems",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all AddressBook items",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/addressBookItems",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"addressBookItems"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete AddressBook item",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/addressBookItems/3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"addressBookItems",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add random AddressBook item",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/addressBookItems/random",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"addressBookItems",
+						"random"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

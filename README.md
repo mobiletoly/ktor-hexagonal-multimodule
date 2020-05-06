@@ -2,9 +2,14 @@
 
 Backend API application built using hexagonal architecture and implemented with Kotlin's ktor.
 
-# What tools/frameworks do we use?
 
-- **gradle** - our build system of choice
+
+
+# Overview
+
+## What tools/frameworks do we use?
+
+- **gradle** - our build system of choice (using Kotlin DSL)
 - **kotlin 1.3** - our language of choice
 - **ktor** for creating web application: https://github.com/ktorio/ktor
 - **ExposedSQL** to access database: https://github.com/JetBrains/Exposed
@@ -22,6 +27,136 @@ and for testing:
 and some other misc stuff:
 - **ktlint** for Kotlin checkstyle
 - **jacoco** for code coverage metrics
+
+
+## Goal
+
+Simple Address Book web service to add/delete/fetch address book items. It demonstrates database access
+as well as using external REST service to assist in generating random address book items.
+You can find Postman collection to access this web service in `integration/postman` directory.
+
+## Hexagonal architecture overview
+
+Project uses Hexagonal (or "ports and adapters") architecture (google it, it is really cool) to separate functionality
+into 5 modules - **domain**, **adapters**, **ports**, **shared**, **app**, with only few modules having dependencies
+on other modules.
+
+So here is a brief overview of each module:
+
+- **domain** - contains business logic
+- **adapters** - provides platform/framework specific functionality (e.g. your database repository classes
+go here)
+- **ports** - set of interfaces and data classes (aka POJO) that is used by domain module to interact with adapters
+module.
+- **app** - application launcher
+
+Now let's take a look at each module in more details
+
+#### Domain module
+
+This is a module containing a business logic of our application. The main idea is that business logic should
+have no idea about frameworks used to implement an application, it should have zero knowledge about database
+used, database ORM technology used, HTTP client used or what is Kafka. For example in our application domain
+module contains a single service "AddressBookService" that has an implementation of our core business logic -
+add, update and delete Address Book items as well as some auxiliary functionality such as generating random
+items for Address Book. It does have a single dependency.
+
+###### Depends on
+- **ports** module. Domain uses this module to provide AddressBookService interface to **adapters** module
+by using `ports.provided` package ("provided by domain") and expects some functionality from Adapters in
+`ports.required` package ("required by domain").
+
+###### What should be in domain
+- Service code to provide business logic functionality
+
+###### What should not be in domain
+- Frameworks (less are better)
+- Database, network clients (no SQL Exposed calls, no Kafka calls, no SQS call etc)
+- No transport logic (e.g. no JSON parsing, no JSON annotations etc). It might be tempting to use JSON objects received
+from web service controllers, but don't it, use **ports** for DTO (Data Transfer Objects) to communicate with
+**adapters** module. It will require extra work and some extra effort to write data structures that might look very
+similar, but when you decide to change your JSON payload, and your business logic will remain the same - it will pay off.
+- DAO 
+
+#### Adapters module
+
+Platform-specific code. Don't put any of your business logic here.
+
+###### Depends on
+- **ports** module. Adapters use this module to fulfill Domain need. For example Domain needs an access in
+getting access to persistent storage (and Domain does not care how data is stored) to add/delete/update Address Book
+item. In this case Domain will add its requirements into `ports.required` package and Adapters should fulfill
+these requirements. In our app Domain declares an interface `ports.requires.addressbook.AddressBookItemRepository`
+and Adapters provides a database-specific implementation of this interface in
+`adapters.db.AddressBookItemRepositoryDbImpl` class.
+
+###### What should be in adapters
+- Web Service controllers (in our app it is **ktor** handlers)
+- HTTP/REST clients
+- Kafka code to post data
+- Database repositories to provide access to underlying database.
+- DAO objects. Yes, DAO objects should not be in **ports** or **adapters** modules if they contain framework-specific
+code or annotations (e.g. JPA annotations). Exceptions can be made, for example Exposed SQL uses plain data classes
+and therefore we decided to put them in **ports**, therefore we use this classes not only as DAO but as DTO objects
+as well (something that we transfer between Adapters and Domain). In your case you might want to consider using
+DAO objects in Adapters only and have transformers to convert DAO objects to DTO objects (DTO objects declared
+in `ports.provided`).
+
+###### What should not be in adapters
+- Avoid any business logic code
+
+
+#### Ports module
+
+Ports is a bridge between Adapters and Domain. Domain declare interfaces it requires from Adapters and put them
+in `ports.required` package. Then Adapters will provide implementations (injected via Dependency Injection, we use
+Koin framework in our application). If Domain wants to share some functionality (usually business services) with
+Adapters - then it will provide interfaces in `ports.provided`, implement them and use DI to inject for Adapters
+to use.
+
+###### Depends on
+No module dependencies
+
+###### What should be in ports
+- `ports.provided` - interfaces for *provided* Domain services to be called from Adapters (in our case domain services will be
+called from web service routes from **adapters** module). DTO objects for Domain<=>Adapters communication can be
+declared here as well.
+- `ports.required` - interfaces for Adapters services *required* by Domain to perform its business logic.
+
+###### What should not be in ports
+- Anything else
+
+#### App module
+
+Application launcher. Should be a very simple code. Can contain application specific resources.
+
+###### Depends on
+All other modules.
+
+
+#### Ports module
+
+Ports is a bridge between Adapters and Domain. Domain declares interfaces it requires from Adapters and put them
+in `ports.required` package. Then Adapters will provide implementations (injected via Dependency Injection, we use
+Koin framework in our application). If Domain wants to share some functionality (usually business services) with
+Adapters - then it will provide interfaces in `ports.provided`, implement them and use DI to inject for Adapters
+to use.
+
+###### Depends on
+No module dependencies
+
+#### Shared module
+
+**shared** module should not be used too often. It may contain some utility functionality, for example in our app we
+have some logger utility functions in shared module, because logging is required in both **adapter** and **domain**
+modules.
+
+###### Depends on
+No module dependencies
+
+
+
+
 
 # Setup
 
