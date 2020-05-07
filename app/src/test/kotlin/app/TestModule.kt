@@ -2,7 +2,7 @@ package app
 
 import adapters.config.EnvironmentVariables
 import org.koin.dsl.module
-import ports.provided.util.DateSupplier
+import ports.required.util.DateSupplier
 
 // Environment-specific configuration
 val envTestModule = module(createdAtStart = true) {

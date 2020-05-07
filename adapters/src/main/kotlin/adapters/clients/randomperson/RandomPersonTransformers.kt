@@ -1,9 +1,9 @@
 package adapters.clients.randomperson
 
-import ports.required.randomperson.RandomPerson
+import ports.required.randomperson.RandomPersonResponseDto
 
 internal fun RandomPersonResponse.toRandomPerson() = with(results.first()) {
-    RandomPerson(
+    RandomPersonResponseDto(
         firstName = name.first,
         lastName = name.last,
         gender = gender,

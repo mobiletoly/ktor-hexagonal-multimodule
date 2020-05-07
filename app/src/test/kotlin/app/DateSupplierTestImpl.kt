@@ -1,6 +1,6 @@
 package app
 
-import ports.provided.util.DateSupplier
+import ports.required.util.DateSupplier
 
 class DateSupplierTestImpl : DateSupplier {
 

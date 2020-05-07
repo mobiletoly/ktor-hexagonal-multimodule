@@ -1,8 +1,8 @@
 package adapters.util
 
-import ports.provided.util.DateSupplier
+import ports.required.util.DateSupplier
 
-class DateSupplierImpl : DateSupplier {
+class DateSupplierSystemTimeImpl : DateSupplier {
 
     override fun currentTimeMillis() = System.currentTimeMillis()
 }

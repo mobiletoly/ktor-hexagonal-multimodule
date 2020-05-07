@@ -3,7 +3,7 @@ package domain.addressbook
 import ports.required.addressbook.AddressBookItem
 import ports.required.addressbook.Gender
 import ports.required.addressbook.PostalAddress
-import ports.required.randomperson.RandomPerson
+import ports.required.randomperson.RandomPersonResponseDto
 import java.lang.IllegalArgumentException
 
 fun String.toGender(): Gender {
@@ -16,7 +16,7 @@ fun String.toGender(): Gender {
     }
 }
 
-fun RandomPerson.buildAddressBookItem() = AddressBookItem(
+fun RandomPersonResponseDto.buildAddressBookItem() = AddressBookItem(
     id = null,
     firstName = firstName,
     lastName = lastName,
@@ -26,7 +26,7 @@ fun RandomPerson.buildAddressBookItem() = AddressBookItem(
     email = email
 )
 
-fun RandomPerson.buildPostalAddress(
+fun RandomPersonResponseDto.buildPostalAddress(
     addressBookItemId: Long
 ) = PostalAddress(
     id = null,

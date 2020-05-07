@@ -73,46 +73,18 @@ by using `ports.provided` package ("provided by domain") and expects some functi
 - Frameworks (less are better)
 - Database, network clients (no SQL Exposed calls, no Kafka calls, no SQS call etc)
 - No transport logic (e.g. no JSON parsing, no JSON annotations etc). It might be tempting to use JSON objects received
-from web service controllers, but don't it, use **ports** for DTO (Data Transfer Objects) to communicate with
+from web service controllers, but don't do this, use **ports** for DTO (Data Transfer Objects) to communicate with
 **adapters** module. It will require extra work and some extra effort to write data structures that might look very
 similar, but when you decide to change your JSON payload, and your business logic will remain the same - it will pay off.
 - DAO 
-
-#### Adapters module
-
-Platform-specific code. Don't put any of your business logic here.
-
-###### Depends on
-- **ports** module. Adapters use this module to fulfill Domain need. For example Domain needs an access in
-getting access to persistent storage (and Domain does not care how data is stored) to add/delete/update Address Book
-item. In this case Domain will add its requirements into `ports.required` package and Adapters should fulfill
-these requirements. In our app Domain declares an interface `ports.requires.addressbook.AddressBookItemRepository`
-and Adapters provides a database-specific implementation of this interface in
-`adapters.db.AddressBookItemRepositoryDbImpl` class.
-
-###### What should be in adapters
-- Web Service controllers (in our app it is **ktor** handlers)
-- HTTP/REST clients
-- Kafka code to post data
-- Database repositories to provide access to underlying database.
-- DAO objects. Yes, DAO objects should not be in **ports** or **adapters** modules if they contain framework-specific
-code or annotations (e.g. JPA annotations). Exceptions can be made, for example Exposed SQL uses plain data classes
-and therefore we decided to put them in **ports**, therefore we use this classes not only as DAO but as DTO objects
-as well (something that we transfer between Adapters and Domain). In your case you might want to consider using
-DAO objects in Adapters only and have transformers to convert DAO objects to DTO objects (DTO objects declared
-in `ports.provided`).
-
-###### What should not be in adapters
-- Avoid any business logic code
-
 
 #### Ports module
 
 Ports is a bridge between Adapters and Domain. Domain declare interfaces it requires from Adapters and put them
 in `ports.required` package. Then Adapters will provide implementations (injected via Dependency Injection, we use
 Koin framework in our application). If Domain wants to share some functionality (usually business services) with
-Adapters - then it will provide interfaces in `ports.provided`, implement them and use DI to inject for Adapters
-to use.
+Adapters - then it will provide interfaces in `ports.provided` for Adapters to use. Also, Ports can declare data
+classes (or POJOs) to allow Domain and Adapters communicate to each other.
 
 ###### Depends on
 No module dependencies
@@ -126,6 +98,39 @@ declared here as well.
 ###### What should not be in ports
 - Anything else
 
+
+#### Adapters module
+
+Platform-specific code. Don't put any of your business logic here.
+
+###### Depends on
+- **ports** module. Adapters use this module to fulfill Domain need. For example Domain needs an access to persistent
+storage (and Domain does not care how data is stored) to add/delete/update Address Book item. In this
+case Domain will add its requirements into `ports.required` package and Adapters should fulfill
+these requirements. In our app Domain declares an interface `ports.required.addressbook.AddressBookItemRepository`
+and Adapters provides a database-specific implementation of this interface in
+`adapters.db.AddressBookItemRepositoryDbImpl` class. Also Domain needs to generate random AddressBook item and it
+adds this requirement via `ports.required.RandomPersonClient` interface and lets Adapters model to choose what
+method to choose (pick from database, generate using its own algorith etc). In our case Adapters decided to
+call free 3rd party REST service to fetch for random names and contact information and injects
+`adapters.clients.randomperson.RandomPersonHttpClient` via dependency injection.
+
+###### What should be in adapters
+- Web Service controllers (in our app it is **ktor** handlers)
+- HTTP/REST clients
+- Kafka code to send or receive data
+- Database repositories to provide access to underlying database.
+- DAO objects. Yes, DAO objects should not be in **ports** or **adapters** modules if they contain framework-specific
+code or annotations (e.g. JPA annotations). Exceptions can be made, for example Exposed SQL uses plain data classes
+and we decided to put them in **ports**, therefore we use this classes not only as DAO but as DTO objects
+as well (something that we transfer between Adapters and Domain). In your case you might want to consider using
+DAO objects in Adapters only and have transformers to convert DAO objects to DTO objects (DTO objects declared
+in `ports.provided`).
+
+###### What should not be in adapters
+- Avoid any business logic code
+
+
 #### App module
 
 Application launcher. Should be a very simple code. Can contain application specific resources.
@@ -134,28 +139,30 @@ Application launcher. Should be a very simple code. Can contain application spec
 All other modules.
 
 
-#### Ports module
-
-Ports is a bridge between Adapters and Domain. Domain declares interfaces it requires from Adapters and put them
-in `ports.required` package. Then Adapters will provide implementations (injected via Dependency Injection, we use
-Koin framework in our application). If Domain wants to share some functionality (usually business services) with
-Adapters - then it will provide interfaces in `ports.provided`, implement them and use DI to inject for Adapters
-to use.
-
-###### Depends on
-No module dependencies
-
 #### Shared module
 
 **shared** module should not be used too often. It may contain some utility functionality, for example in our app we
-have some logger utility functions in shared module, because logging is required in both **adapter** and **domain**
+have some logger utility functions in the shared module, because logging required in both **adapter** and **domain**
 modules.
 
 ###### Depends on
 No module dependencies
 
 
-
+### Example of workflow in modules
+ 
+1. User performs HTTP POST request to /addressBookItems to create new AddressBook item. This request handled by
+REST controller in `adapters.routes.AddressBookItemRoute` class. JSON payload is deserialized and copied into
+`ports.provided.addressbook.SaveAddressBookItemRequestDto` data class required by Domain's service.
+2. REST controller calls method `addAddressBookItem(...)` declared by interface `ports.provided.AddressBoookService`
+(and implemented by **domain** module in `AddressBookServiceImpl` class)
+3. Domain code in class `domain.addressbook.AddressBookServiceImpl` performs business logic related to validating and
+storing AddressBook item received as DTO object from REST controller. At some point of time domain logic requires storing
+of new item in persistent storage. Domain code calls method `upsert(...)` (update or insert) declared by interface
+`AddressBookItemRepository` (and implemented by Adapters code in `AddressBookItemRepositoryDbImpl` class) as well as
+method `upsert(...)` declared by interface `PostalAddressRepository`.
+4. Domain's service code returns result back to Adapters REST controller when it gets serialized into JSON and returned
+back to user.
 
 
 # Setup

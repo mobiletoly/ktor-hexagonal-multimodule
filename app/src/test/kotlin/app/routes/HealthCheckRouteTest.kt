@@ -12,7 +12,7 @@ import org.koin.experimental.property.inject
 import org.koin.ktor.ext.inject
 import org.spekframework.spek2.style.specification.describe
 import ports.provided.healthcheck.HealthCheckResponseDto
-import ports.provided.util.DateSupplier
+import ports.required.util.DateSupplier
 
 object HealthCheckRouteTest : AppRouteSpek({
 

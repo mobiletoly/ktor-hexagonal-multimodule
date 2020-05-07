@@ -17,7 +17,7 @@ import adapters.http.HttpClientFactoryImpl
 import adapters.routes.AddressBookItemRoute
 import adapters.routes.HealthCheckRoute
 import adapters.services.healthcheck.HealthCheckService
-import adapters.util.DateSupplierImpl
+import adapters.util.DateSupplierSystemTimeImpl
 import ports.required.TransactionService
 import ports.required.addressbook.AddressBookItemRepository
 import ports.required.addressbook.PostalAddressRepository
@@ -25,7 +25,7 @@ import com.zaxxer.hikari.HikariDataSource
 import io.ktor.application.Application
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
-import ports.provided.util.DateSupplier
+import ports.required.util.DateSupplier
 import ports.required.randomperson.RandomPersonClient
 import javax.sql.DataSource
 
@@ -37,7 +37,7 @@ val envModule = module(createdAtStart = true) {
         EnvironmentVariablesImpl()
     }
     single<DateSupplier> {
-        DateSupplierImpl()
+        DateSupplierSystemTimeImpl()
     }
 }
 

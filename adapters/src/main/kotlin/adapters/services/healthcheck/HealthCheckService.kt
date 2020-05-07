@@ -2,7 +2,7 @@ package adapters.services.healthcheck
 
 import adapters.config.AppConfig
 import ports.provided.healthcheck.HealthCheckResponseDto
-import ports.provided.util.DateSupplier
+import ports.required.util.DateSupplier
 import java.util.Date
 
 class HealthCheckService(

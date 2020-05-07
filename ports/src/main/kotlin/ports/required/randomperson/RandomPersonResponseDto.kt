@@ -1,6 +1,6 @@
 package ports.required.randomperson
 
-data class RandomPerson(
+data class RandomPersonResponseDto(
     val firstName: String,
     val lastName: String,
     val gender: String,
