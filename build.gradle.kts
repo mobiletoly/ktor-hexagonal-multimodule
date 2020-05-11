@@ -37,7 +37,6 @@ allprojects {
 
     apply(plugin = "kotlin")
     apply(plugin = "jacoco")
-//    apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
     java {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -48,6 +47,7 @@ allprojects {
         kotlinOptions {
             languageVersion = kotlinLanguageVersion
             apiVersion = kotlinLanguageVersion
+            (this as org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions).jvmTarget = JavaVersion.VERSION_1_8.toString()
             freeCompilerArgs = listOfNotNull(
                 "-Xopt-in=kotlin.RequiresOptIn"
             )
