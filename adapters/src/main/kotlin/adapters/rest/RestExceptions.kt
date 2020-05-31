@@ -140,3 +140,18 @@ data class RestSqlException(
         const val ERROR_TYPE = "/errors/sql-error"
     }
 }
+
+class RestExternalServiceCallException(
+    status: HttpStatusCode,
+    specifics: Map<String, Any?>
+) : RestGenericException(
+    type = ERROR_TYPE,
+    title = "Error performing external service call",
+    status = status,
+    detail = "External service call response needs to be inspected for error details",
+    specifics = specifics
+) {
+    companion object {
+        const val ERROR_TYPE = "/errors/external-service-call"
+    }
+}
