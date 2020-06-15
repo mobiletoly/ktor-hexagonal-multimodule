@@ -42,6 +42,10 @@ allprojects {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+}
+
+subprojects {
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
     tasks.withType<KotlinCompile<*>> {
         kotlinOptions {
@@ -73,10 +77,6 @@ allprojects {
         testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spekVersion")
         testImplementation(gradleTestKit())
     }
-}
-
-subprojects {
-    apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
     ktlint {
         version.set(ktlintVersion)

@@ -38,15 +38,15 @@ You can find Postman collection to access this web service in `integration/postm
 ## Hexagonal architecture overview
 
 Project uses Hexagonal (or "ports and adapters") architecture (google it, it is really cool) to separate functionality
-into 5 modules - **domain**, **adapters**, **ports**, **shared**, **app**, with only few modules having dependencies
+into 5 modules - **core**, **adapters**, **ports**, **shared**, **app**, with only few modules having dependencies
 on other modules.
 
 So here is a brief overview of each module:
 
-- **domain** - contains business logic
+- **core** - contains business logic
 - **adapters** - provides platform/framework specific functionality (e.g. your database repository classes
 go here)
-- **ports** - set of interfaces and data classes (aka POJO) that is used by domain module to interact with adapters
+- **ports** - set of interfaces and data classes (aka POJO) that is used by core module to interact with adapters
 module.
 - **app** - application launcher
 
@@ -56,20 +56,20 @@ Now let's take a look at each module in more details
 
 This is a module containing a business logic of our application. The main idea is that business logic should
 have no idea about frameworks used to implement an application, it should have zero knowledge about database
-used, database ORM technology used, HTTP client used or what is Kafka. For example in our application domain
+used, database ORM technology used, HTTP client used or what is Kafka. For example in our application core
 module contains a single service "AddressBookService" that has an implementation of our core business logic -
 add, update and delete Address Book items as well as some auxiliary functionality such as generating random
 items for Address Book. It does have a single dependency.
 
 ###### Depends on
 - **ports** module. Domain uses this module to provide AddressBookService interface to **adapters** module
-by using `ports.provided` package ("provided by domain") and expects some functionality from Adapters in
-`ports.required` package ("required by domain").
+by using `ports.output` package ("provided by core") and expects some functionality from Adapters in
+`ports.input` package ("required by core").
 
-###### What should be in domain
+###### What should be in core
 - Service code to provide business logic functionality
 
-###### What should not be in domain
+###### What should not be in core
 - Frameworks (less are better)
 - Database, network clients (no SQL Exposed calls, no Kafka calls, no SQS call etc)
 - No transport logic (e.g. no JSON parsing, no JSON annotations etc). It might be tempting to use JSON objects received
@@ -81,19 +81,19 @@ similar, but when you decide to change your JSON payload, and your business logi
 #### Ports module
 
 Ports is a bridge between Adapters and Domain. Domain declare interfaces it requires from Adapters and put them
-in `ports.required` package. Then Adapters will provide implementations (injected via Dependency Injection, we use
+in `ports.input` package. Then Adapters will provide implementations (injected via Dependency Injection, we use
 Koin framework in our application). If Domain wants to share some functionality (usually business services) with
-Adapters - then it will provide interfaces in `ports.provided` for Adapters to use. Also, Ports can declare data
+Adapters - then it will provide interfaces in `ports.output` for Adapters to use. Also, Ports can declare data
 classes (or POJOs) to allow Domain and Adapters communicate to each other.
 
 ###### Depends on
 No module dependencies
 
 ###### What should be in ports
-- `ports.provided` - interfaces for *provided* Domain services to be called from Adapters (in our case domain services will be
+- `ports.output` - interfaces for *provided* Domain services to be called from Adapters (in our case core services will be
 called from web service routes from **adapters** module). DTO objects for Domain<=>Adapters communication can be
 declared here as well.
-- `ports.required` - interfaces for Adapters services *required* by Domain to perform its business logic.
+- `ports.input` - interfaces for Adapters services *required* by Domain to perform its business logic.
 
 ###### What should not be in ports
 - Anything else
@@ -106,14 +106,14 @@ Platform-specific code. Don't put any of your business logic here.
 ###### Depends on
 - **ports** module. Adapters use this module to fulfill Domain need. For example Domain needs an access to persistent
 storage (and Domain does not care how data is stored) to add/delete/update Address Book item. In this
-case Domain will add its requirements into `ports.required` package and Adapters should fulfill
-these requirements. In our app Domain declares an interface `ports.required.addressbook.AddressBookItemRepository`
+case Domain will add its requirements into `ports.input` package and Adapters should fulfill
+these requirements. In our app Domain declares an interface `AddressBookItemRepository`
 and Adapters provides a database-specific implementation of this interface in
 `adapters.db.AddressBookItemRepositoryDbImpl` class. Also Domain needs to generate random AddressBook item and it
-adds this requirement via `ports.required.RandomPersonClient` interface and lets Adapters model to choose what
+adds this requirement via `ports.input.RandomPersonClient` interface and lets Adapters model to choose what
 method to choose (pick from database, generate using its own algorith etc). In our case Adapters decided to
 call free 3rd party REST service to fetch for random names and contact information and injects
-`adapters.clients.randomperson.RandomPersonHttpClient` via dependency injection.
+`RandomPersonHttpClient` via dependency injection.
 
 ###### What should be in adapters
 - Web Service controllers (in our app it is **ktor** handlers)
@@ -125,7 +125,7 @@ code or annotations (e.g. JPA annotations). Exceptions can be made, for example 
 and we decided to put them in **ports**, therefore we use this classes not only as DAO but as DTO objects
 as well (something that we transfer between Adapters and Domain). In your case you might want to consider using
 DAO objects in Adapters only and have transformers to convert DAO objects to DTO objects (DTO objects declared
-in `ports.provided`).
+in `ports.output`).
 
 ###### What should not be in adapters
 - Avoid any business logic code
@@ -142,7 +142,7 @@ All other modules.
 #### Shared module
 
 **shared** module should not be used too often. It may contain some utility functionality, for example in our app we
-have some logger utility functions in the shared module, because logging required in both **adapter** and **domain**
+have some logger utility functions in the shared module, because logging required in both **adapter** and **core**
 modules.
 
 ###### Depends on
@@ -152,12 +152,12 @@ No module dependencies
 ### Example of workflow in modules
  
 1. User performs HTTP POST request to /addressBookItems to create new AddressBook item. This request handled by
-REST controller in `adapters.routes.AddressBookItemRoute` class. JSON payload is deserialized and copied into
-`ports.provided.addressbook.SaveAddressBookItemRequestDto` data class required by Domain's service.
-2. REST controller calls method `addAddressBookItem(...)` declared by interface `ports.provided.AddressBoookService`
-(and implemented by **domain** module in `AddressBookServiceImpl` class)
-3. Domain code in class `domain.addressbook.AddressBookServiceImpl` performs business logic related to validating and
-storing AddressBook item received as DTO object from REST controller. At some point of time domain logic requires storing
+REST controller in `AddressBookItemRoute` class. JSON payload is deserialized and copied into
+`SaveAddressBookItemRequestDto` data class required by Domain's service.
+2. REST controller calls method `addAddressBookItem(...)` declared by interface `ports.output.AddressBoookService`
+(and implemented by **core** module in `AddressBookServiceImpl` class)
+3. Domain code in class `AddressBookServiceImpl` performs business logic related to validating and
+storing AddressBook item received as DTO object from REST controller. At some point of time core logic requires storing
 of new item in persistent storage. Domain code calls method `upsert(...)` (update or insert) declared by interface
 `AddressBookItemRepository` (and implemented by Adapters code in `AddressBookItemRepositoryDbImpl` class) as well as
 method `upsert(...)` declared by interface `PostalAddressRepository`.
@@ -230,7 +230,7 @@ will be selected
         
 Next step is to run application via gradle:
 
-        ./gradlew build :app:run --args='-config=app/src/main/resources/application-dev.conf'
+        ./gradlew build :application:configuration:run --args='-config=application/configuration/src/main/resources/application-dev.conf'
 
 If you don't specify --args argument, then by default application.conf will be loaded. Both files are very similar,
 but application-dev.conf can contain some settings helpful during a development phase (e.g. auto-reload support).

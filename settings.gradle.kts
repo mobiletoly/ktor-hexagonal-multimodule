@@ -15,8 +15,8 @@ pluginManagement {
 }
 
 rootProject.name = "addrbook-hexagonal-ktor"
-include("app")
-include("adapters")
-include("domain")
-include("ports")
-include("shared")
+include("application:configuration")
+include("application:adapters")
+include("application:core")
+include("application:ports")
+include("application:shared")

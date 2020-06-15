@@ -38,7 +38,7 @@
 			"response": []
 		},
 		{
-			"name": "Add AddressBook item",
+			"name": "Add AddressBook entry",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -53,21 +53,21 @@
 					"raw": "{\n\t\"firstName\": \"Toly\",\n\t\"lastName\": \"Pochkin\",\n\t\"gender\": \"MALE\",\n\t\"age\": 40,\n\t\"phoneNumber\": \"999-777-8888\",\n\t\"email\": \"some-email-address-for-toly@some-email-domain.com\",\n\t\"address\": {\n\t\t\"address1\": \"123 Awesome Street, 777\",\n\t\t\"city\": \"Seattle\",\n\t\t\"state\": \"WA\",\n\t\t\"country\": \"USA\"\n\t}\n}\n"
 				},
 				"url": {
-					"raw": "http://localhost:8080/addressBookItems",
+					"raw": "http://localhost:8080/addressBookEntries",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"addressBookItems"
+						"addressBookEntries"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Update AddressBook item",
+			"name": "Update AddressBook entry",
 			"request": {
 				"method": "PUT",
 				"header": [
@@ -82,14 +82,14 @@
 					"raw": "{\n\t\"firstName\": \"Tollly\",\n\t\"lastName\": \"Pochkinnn\",\n\t\"gender\": \"MALE\",\n\t\"age\": 39,\n\t\"phoneNumber\": \"999-777-8888\",\n\t\"email\": \"some-email-address-for-toly@some-email-domain.com\",\n\t\"address\": {\n\t\t\"address1\": \"123 Awesome Street, 777\",\n\t\t\"city\": \"Seattle\",\n\t\t\"state\": \"WA\",\n\t\t\"country\": \"USA\"\n\t}\n}\n"
 				},
 				"url": {
-					"raw": "http://localhost:8080/addressBookItems/1",
+					"raw": "http://localhost:8080/addressBookEntries/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"addressBookItems",
+						"addressBookEntries",
 						"1"
 					]
 				}
@@ -97,7 +97,7 @@
 			"response": []
 		},
 		{
-			"name": "Get AddressBook item",
+			"name": "Get AddressBook entry by id",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -115,14 +115,14 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8080/addressBookItems/1",
+					"raw": "http://localhost:8080/addressBookEntries/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"addressBookItems",
+						"addressBookEntries",
 						"1"
 					]
 				}
@@ -130,7 +130,7 @@
 			"response": []
 		},
 		{
-			"name": "Get all AddressBook items",
+			"name": "Get all AddressBook entries",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -148,21 +148,21 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8080/addressBookItems",
+					"raw": "http://localhost:8080/addressBookEntries",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"addressBookItems"
+						"addressBookEntries"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Delete AddressBook item",
+			"name": "Delete AddressBook entry",
 			"request": {
 				"method": "DELETE",
 				"header": [
@@ -177,14 +177,14 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8080/addressBookItems/3",
+					"raw": "http://localhost:8080/addressBookEntries/3",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"addressBookItems",
+						"addressBookEntries",
 						"3"
 					]
 				}
@@ -192,7 +192,7 @@
 			"response": []
 		},
 		{
-			"name": "Add random AddressBook item",
+			"name": "Add random AddressBook entry",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -212,14 +212,14 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8080/addressBookItems/random",
+					"raw": "http://localhost:8080/addressBookEntries/random",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"addressBookItems",
+						"addressBookEntries",
 						"random"
 					]
 				}
