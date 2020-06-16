@@ -10,7 +10,7 @@ import adapters.persistence.DatabaseConnector
 import adapters.persistence.DatabaseErrorInspector
 import adapters.persistence.TransactionServiceDbImpl
 import adapters.persistence.addressbook.PostalAddressRepository
-import adapters.persistence.postgresql.PgErrorInspector
+import adapters.persistence.util.postgresql.PgErrorInspector
 import adapters.remoting.HttpClientFactory
 import adapters.remoting.HttpClientFactoryImpl
 import adapters.persistence.addressbook.AddressBookPersistenceAdapter

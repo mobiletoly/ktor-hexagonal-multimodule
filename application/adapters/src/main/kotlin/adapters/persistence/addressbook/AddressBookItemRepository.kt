@@ -1,6 +1,6 @@
 package adapters.persistence.addressbook
 
-import adapters.persistence.postgresql.pgInsertOrUpdate
+import adapters.persistence.util.postgresql.pgInsertOrUpdate
 import ports.input.RequiresTransactionContext
 import shared.util.d
 import mu.KotlinLogging

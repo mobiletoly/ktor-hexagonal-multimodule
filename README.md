@@ -1,9 +1,8 @@
 # Hexagonal architecture for AddressBook
 
-Backend API application built using hexagonal architecture and implemented with Kotlin's ktor.
-
-
-
+Backend API service built using hexagonal architecture and implemented with Kotlin's ktor.
+This code may seems like an overkill for a simple application such as Address Book, but treat
+is a foundation for much larger services. 
 
 # Overview
 
@@ -38,38 +37,39 @@ You can find Postman collection to access this web service in `integration/postm
 ## Hexagonal architecture overview
 
 Project uses Hexagonal (or "ports and adapters") architecture (google it, it is really cool) to separate functionality
-into 5 modules - **core**, **adapters**, **ports**, **shared**, **app**, with only few modules having dependencies
+into 5 modules - **core**, **adapters**, **ports**, **shared**, **configuration**, with only few modules having dependencies
 on other modules.
 
 So here is a brief overview of each module:
 
-- **core** - contains business logic
+- **core** - contains business logic (services that implement use cases)
 - **adapters** - provides platform/framework specific functionality (e.g. your database repository classes
 go here)
 - **ports** - set of interfaces and data classes (aka POJO) that is used by core module to interact with adapters
 module.
-- **app** - application launcher
+- **configuration** - application configuration and launcher
+- **shared** - miscellaneous code that can be useful for all other modules 
 
 Now let's take a look at each module in more details
 
-#### Domain module
+#### Core module
 
 This is a module containing a business logic of our application. The main idea is that business logic should
 have no idea about frameworks used to implement an application, it should have zero knowledge about database
-used, database ORM technology used, HTTP client used or what is Kafka. For example in our application core
-module contains a single service "AddressBookService" that has an implementation of our core business logic -
-add, update and delete Address Book items as well as some auxiliary functionality such as generating random
-items for Address Book. It does have a single dependency.
+used, database ORM technology used, HTTP client used or (for instance) what is Kafka. For example in our
+application Core module contains multiple service, such as `LoadAddressBookEntryService`,
+`SaveAddressBookEntryService` etc implementing our core business logic:
+add, update and delete Address Book entries.
 
 ###### Depends on
-- **ports** module. Domain uses this module to provide AddressBookService interface to **adapters** module
-by using `ports.output` package ("provided by core") and expects some functionality from Adapters in
-`ports.input` package ("required by core").
+- **Ports** module. Core uses Ports module to provide service functionality to Adapters module
+via Use Case interfaces declared in Ports. Adapters module uses this use case interfaces
+to call business logic from Web controllers (routes).
 
-###### What should be in core
-- Service code to provide business logic functionality
+###### What should be in Core
+- Service code to provide business logic functionality.
 
-###### What should not be in core
+###### What should not be in Core
 - Frameworks (less are better)
 - Database, network clients (no SQL Exposed calls, no Kafka calls, no SQS call etc)
 - No transport logic (e.g. no JSON parsing, no JSON annotations etc). It might be tempting to use JSON objects received
@@ -80,20 +80,25 @@ similar, but when you decide to change your JSON payload, and your business logi
 
 #### Ports module
 
-Ports is a bridge between Adapters and Domain. Domain declare interfaces it requires from Adapters and put them
-in `ports.input` package. Then Adapters will provide implementations (injected via Dependency Injection, we use
-Koin framework in our application). If Domain wants to share some functionality (usually business services) with
-Adapters - then it will provide interfaces in `ports.output` for Adapters to use. Also, Ports can declare data
-classes (or POJOs) to allow Domain and Adapters communicate to each other.
+Ports is a bridge between Adapters and Core. Core declare interfaces it requires from Adapters and put them
+in `ports.input` package. Then Adapters provides implementations (injected via Dependency Injection, we use
+Koin framework in our application). If Core wants to share some functionality (usually business services) with
+Adapters (e.g. services with business logic to be called from Adapter's web controllers) - then it will provide
+interfaces in `ports.output` for Adapters to use. Also, Ports can declare data
+classes (or POJOs) to allow Core and Adapters to communicate to each other (if boundaries is not
+clear and flow goes in both directions - we use `ports.models` to declare this kind
+of data classes).
 
 ###### Depends on
 No module dependencies
 
 ###### What should be in ports
-- `ports.output` - interfaces for *provided* Domain services to be called from Adapters (in our case core services will be
-called from web service routes from **adapters** module). DTO objects for Domain<=>Adapters communication can be
-declared here as well.
-- `ports.input` - interfaces for Adapters services *required* by Domain to perform its business logic.
+- `ports.input` - interfaces for Adapters module services *required* by Core to perform its business logic.
+   This is a place for application's Use Case interfaces as well (implemented by Adapter module).
+- `ports.output` - interfaces for *provided* Core services to be called from Adapters module (in our case Core
+services will be called from web controllers/routes that reside in Adapters module).
+- `ports.models` - DTO objects for Core<=>Adapters communication can be declared here if they
+logically they do not fit in input and output packages.
 
 ###### What should not be in ports
 - Anything else
@@ -101,39 +106,42 @@ declared here as well.
 
 #### Adapters module
 
-Platform-specific code. Don't put any of your business logic here.
+Platform-specific code. Don't put any of your business logic here. This module
+implements platform specific functionality, such as database access or HTTP calls.
+Adapters module contains two logical parts - `driver` (primary adapters) and `driven` (secondary adapters).
+Primary adapters contain functionality that triggers business logic via `ports.input` interfaces, in our case
+this is ktor's web controllers (routes). To make it more obvious we put primary code in
+`adapters.primary` package (we don't do the same for secondary adapters, they reside high-level under `adapters`
+package).
 
 ###### Depends on
-- **ports** module. Adapters use this module to fulfill Domain need. For example Domain needs an access to persistent
-storage (and Domain does not care how data is stored) to add/delete/update Address Book item. In this
-case Domain will add its requirements into `ports.input` package and Adapters should fulfill
-these requirements. In our app Domain declares an interface `AddressBookItemRepository`
-and Adapters provides a database-specific implementation of this interface in
-`adapters.db.AddressBookItemRepositoryDbImpl` class. Also Domain needs to generate random AddressBook item and it
-adds this requirement via `ports.input.RandomPersonClient` interface and lets Adapters model to choose what
-method to choose (pick from database, generate using its own algorith etc). In our case Adapters decided to
-call free 3rd party REST service to fetch for random names and contact information and injects
-`RandomPersonHttpClient` via dependency injection.
+- **Ports** module. Adapters use this module to fulfill Core module needs. For example Core needs access to persistent
+storage (and Core module does not really care how data must be stored) to add/delete/update Address Book entries.
+In this case Core module will add its requirements into `ports.input` package and Adapters module should fulfill
+these requirements. For example in our app Core declares `AddAddressBookEntryUseCase` interface
+and Adapters provides a SQL database implementation of this interface via
+`AddressBookPersistenceAdapter` class.
 
 ###### What should be in adapters
-- Web Service controllers (in our app it is **ktor** handlers)
+- Web Service controllers (in our app it is **ktor** routes)
 - HTTP/REST clients
-- Kafka code to send or receive data
 - Database repositories to provide access to underlying database.
-- DAO objects. Yes, DAO objects should not be in **ports** or **adapters** modules if they contain framework-specific
-code or annotations (e.g. JPA annotations). Exceptions can be made, for example Exposed SQL uses plain data classes
-and we decided to put them in **ports**, therefore we use this classes not only as DAO but as DTO objects
-as well (something that we transfer between Adapters and Domain). In your case you might want to consider using
-DAO objects in Adapters only and have transformers to convert DAO objects to DTO objects (DTO objects declared
-in `ports.output`).
+- For example Kafka or ActiveMQ code to send or receive data.
+- DAO objects. Yes, DAO objects should not be in Ports or Core modules. First of all, they can contain
+framework-specific code or annotations (e.g. JPA annotations). Second, you don't want to have your business
+entities to reflect database table layout.
+- DTO (Data Transfer Object) entities. It could be JSON payloads associated with HTTP request/response calls
+and they must be converted to business entities (declared in Ports module) before being passed
+to Core module (if needed).
 
 ###### What should not be in adapters
 - Avoid any business logic code
 
 
-#### App module
+#### Configuration module
 
 Application launcher. Should be a very simple code. Can contain application specific resources.
+Contains application configuration files as well.
 
 ###### Depends on
 All other modules.
@@ -151,18 +159,24 @@ No module dependencies
 
 ### Example of workflow in modules
  
-1. User performs HTTP POST request to /addressBookItems to create new AddressBook item. This request handled by
-REST controller in `AddressBookItemRoute` class. JSON payload is deserialized and copied into
-`SaveAddressBookItemRequestDto` data class required by Domain's service.
-2. REST controller calls method `addAddressBookItem(...)` declared by interface `ports.output.AddressBoookService`
-(and implemented by **core** module in `AddressBookServiceImpl` class)
-3. Domain code in class `AddressBookServiceImpl` performs business logic related to validating and
-storing AddressBook item received as DTO object from REST controller. At some point of time core logic requires storing
-of new item in persistent storage. Domain code calls method `upsert(...)` (update or insert) declared by interface
-`AddressBookItemRepository` (and implemented by Adapters code in `AddressBookItemRepositoryDbImpl` class) as well as
-method `upsert(...)` declared by interface `PostalAddressRepository`.
-4. Domain's service code returns result back to Adapters REST controller when it gets serialized into JSON and returned
-back to user.
+1. User performs HTTP POST request to `/addressBookEntries` to add new AddressBook entry.
+This request handled by REST controller in `adapters.primary.web.routes.addressbook.SaveAddressBookEntryRoute`
+class. JSON request payload is validated and deserialized into
+`adapters.primary.web.routes.addressbook.dto.AddressBookEntryDto` data class, validated and copied into
+`ports.models.AddressBookEntry` data class required by Core service.
+2. Web controller calls `addAddressBookEntry()` method of injected interface `ports.output.addressbook.SaveAddressBookEntryPort`
+(and implemented by Core module in `core.addressbook.SaveAddressBookEntryService` class).
+Previously created AddressBookEntry object will be passed to this method.
+3. Core module's code in class `SaveAddressBookEntryService` performs business logic related to validating and
+storing AddressBookEntry object from Web controller. At some point of time business logic requires storing
+of new entry in persistent storage. Core code calls `addAddressBookEntry()` method of injected interface
+`ports.output.addressbook.SaveAddressBookEntryPort` implemented by Adapter's module class
+`adapters.persistence.addressbook.AddressBookPersistenceAdapter`.
+4. Adapter converts AddressBookEntry into two DAO objects `AddressBookItemSqlEntity` and `PostalAddressSqlEntity`
+and store them in SQL database (via repository classes). Once DAO objects are stored, new resuled DAO
+objects are converted back to new AddressBookEntry and returned to Core module.
+4. Core service code returns AddressBookEntry object back to Adapters Web controller when it gets serialized into
+JSON response (`AddressBookEntryResponseDto` object) and returned to a caller.
 
 
 # Setup
@@ -171,7 +185,7 @@ back to user.
 
 #### Docker
 
-Docker is not required to run this code locally, but makes setup a little easier. We recommend installing it.
+Docker not required to run this code locally, but makes setup a little easier. We recommend installing it.
 
 #### PostgreSQL
 

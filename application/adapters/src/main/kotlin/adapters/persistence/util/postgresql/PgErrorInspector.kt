@@ -1,4 +1,4 @@
-package adapters.persistence.postgresql
+package adapters.persistence.util.postgresql
 
 import adapters.persistence.DatabaseErrorInspector
 import adapters.persistence.DatabaseErrorState

@@ -1,4 +1,4 @@
-package adapters.persistence.postgresql
+package adapters.persistence.util.postgresql
 
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
