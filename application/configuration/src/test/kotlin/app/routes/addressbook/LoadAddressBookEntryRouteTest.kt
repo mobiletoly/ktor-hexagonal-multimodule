@@ -14,7 +14,7 @@ import ports.output.errors.ResourceNotFoundException
 
 object LoadAddressBookEntryRouteTest : AppRouteSpek({
 
-    describe("HTTP GET /addressBookItem/:id") {
+    describe("HTTP GET /addressBookEntries/:id") {
         context("with :id matching existing record") {
             it("returns HTTP 200 OK with existing record") {
                 withApp {

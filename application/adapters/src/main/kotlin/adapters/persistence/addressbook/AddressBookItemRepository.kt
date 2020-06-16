@@ -1,16 +1,17 @@
 package adapters.persistence.addressbook
 
 import adapters.persistence.util.postgresql.pgInsertOrUpdate
-import ports.input.RequiresTransactionContext
-import shared.util.d
-import mu.KotlinLogging
+import com.github.michaelbull.logging.InlineLogger
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
-
-private val logger = KotlinLogging.logger { }
+import ports.input.RequiresTransactionContext
+import shared.util.d
 
 class AddressBookItemRepository {
+
+    private val logger = InlineLogger()
+
     @RequiresTransactionContext
     fun getByIdOrNull(id: Long): AddressBookItemSqlEntity? {
         return AddressBookItemSqlEntities

@@ -16,7 +16,7 @@ import ports.output.errors.ResourceNotFoundException
 
 object SaveAddressBookEntryRouteTest : AppRouteSpek({
 
-    describe("HTTP POST /addressBookItem") {
+    describe("HTTP POST /addressBookEntries") {
         context("with unique and valid payload") {
             it("adds record and returns HTTP 201 Created with payload") {
                 withApp {
@@ -78,7 +78,7 @@ object SaveAddressBookEntryRouteTest : AppRouteSpek({
         }
     }
 
-    describe("HTTP PUT /addressBookItem") {
+    describe("HTTP PUT /addressBookEntries") {
         context("with id of existing record") {
             it("update existing record and returns HTTP 200 OK") {
                 withApp {

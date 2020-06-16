@@ -1,11 +1,11 @@
 package core.addressbook
 
-import ports.models.AddressBookEntry
 import ports.input.RequiresTransactionContext
 import ports.input.TransactionService
 import ports.input.addressbook.LoadAddressBookEntryByIdUseCase
 import ports.input.addressbook.LoadAddressBookEntryByIdUseCase.LoadAddressBookEntryByIdUseCaseCommand
 import ports.input.addressbook.LoadAllAddressBookEntriesUseCase
+import ports.models.AddressBookEntry
 import ports.output.addressbook.LoadAddressBookEntryPort
 
 /**

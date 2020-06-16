@@ -3,15 +3,15 @@ package adapters.primary.web.util
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
+import com.github.michaelbull.logging.InlineLogger
 import io.ktor.application.ApplicationCall
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.request.uri
 import io.ktor.response.respond
-import mu.KotlinLogging
-import shared.util.d
+import shared.util.w
 
-private val logger = KotlinLogging.logger { }
+private val logger = InlineLogger()
 
 internal suspend inline fun <reified T : Any> ApplicationCall.receiveValidated(): T {
     return try {
@@ -48,7 +48,7 @@ private fun raiseInvalidRequestParameterFormatException(name: String, e: Excepti
 }
 
 private fun handleReceiveWithValidationException(e: Exception): Nothing {
-    logger.d("handleReceiveWithValidationException", e) {
+    logger.w("handleReceiveWithValidationException", e) {
         "Exception has been raised while deserializing payload"
     }
     when (e) {

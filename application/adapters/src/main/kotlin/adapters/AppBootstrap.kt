@@ -6,6 +6,7 @@ import adapters.primary.web.util.respondRestException
 import adapters.primary.web.util.throwRestException
 import adapters.primary.web.util.toRestErrorResponse
 import adapters.util.setProjectDefaults
+import com.github.michaelbull.logging.InlineLogger
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
@@ -25,18 +26,16 @@ import io.ktor.request.header
 import io.ktor.request.uri
 import io.ktor.response.header
 import io.ktor.response.respond
-import mu.KotlinLogging
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.koin.ktor.ext.inject
 import ports.output.errors.DomainException
 import shared.util.e
 import java.util.UUID
 
-private val logger = KotlinLogging.logger { }
-
 class AppBootstrap(
     application: Application
 ) {
+    private val logger = InlineLogger()
 
     init {
         val databaseErrorInspector by application.inject<DatabaseErrorInspector>()

@@ -1,6 +1,6 @@
 package adapters.persistence.addressbook
 
-import mu.KotlinLogging
+import com.github.michaelbull.logging.InlineLogger
 import ports.input.RequiresTransactionContext
 import ports.models.AddressBookEntry
 import ports.output.addressbook.AddressBookEntryNotFoundException
@@ -8,8 +8,6 @@ import ports.output.addressbook.DeleteAddressBookEntryPort
 import ports.output.addressbook.LoadAddressBookEntryPort
 import ports.output.addressbook.SaveAddressBookEntryPort
 import shared.util.d
-
-private val logger = KotlinLogging.logger { }
 
 /**
  * Adapter to address book item and postal address repositories.
@@ -21,6 +19,8 @@ internal class AddressBookPersistenceAdapter(
 ) : LoadAddressBookEntryPort,
     SaveAddressBookEntryPort,
     DeleteAddressBookEntryPort {
+
+    private val logger = InlineLogger()
 
     @RequiresTransactionContext
     override fun loadAddressBookEntry(id: Long): AddressBookEntry {
@@ -53,7 +53,9 @@ internal class AddressBookPersistenceAdapter(
 
     @RequiresTransactionContext
     override fun addAddressBookEntry(addressBookEntry: AddressBookEntry): AddressBookEntry {
-        logger.d("addAddressBookEntry") { "Add AddressBookEntry: $addressBookEntry" }
+        logger.d("addAddressBookEntry") {
+            "Add AddressBookEntry: $addressBookEntry"
+        }
         require(addressBookEntry.id == null) { "addressBookItem.id must be null" }
         return upsertAddressBookEntry(addressBookEntry = addressBookEntry, postalAddressId = null)
     }

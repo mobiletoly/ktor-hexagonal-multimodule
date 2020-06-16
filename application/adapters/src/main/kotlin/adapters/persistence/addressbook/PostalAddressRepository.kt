@@ -1,16 +1,16 @@
 package adapters.persistence.addressbook
 
 import adapters.persistence.util.postgresql.pgInsertOrUpdate
-import ports.input.RequiresTransactionContext
-import shared.util.d
-import mu.KotlinLogging
-import org.jetbrains.exposed.sql.deleteWhere
+import com.github.michaelbull.logging.InlineLogger
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
-
-private val logger = KotlinLogging.logger { }
+import ports.input.RequiresTransactionContext
+import shared.util.d
 
 class PostalAddressRepository {
+
+    private val logger = InlineLogger()
+
     @RequiresTransactionContext
     fun getById(id: Long): PostalAddressSqlEntity {
         return PostalAddressSqlEntities
@@ -52,47 +52,11 @@ class PostalAddressRepository {
     }
 
     @RequiresTransactionContext
-    fun getByIds(ids: Collection<Long>): Map<Long, PostalAddressSqlEntity> {
-        return PostalAddressSqlEntities
-            .select {
-                PostalAddressSqlEntities.id inList ids
-            }
-            .map {
-                val postalAddress = PostalAddressSqlEntity.fromSqlResultRow(it)
-                postalAddress.id!! to postalAddress
-            }
-            .toMap()
-    }
-
-    @RequiresTransactionContext
     fun getAll(): List<PostalAddressSqlEntity> {
         return PostalAddressSqlEntities
             .selectAll()
             .map {
                 PostalAddressSqlEntity.fromSqlResultRow(it)
             }
-    }
-
-    @RequiresTransactionContext
-    fun deleteById(id: Long): Boolean {
-        return PostalAddressSqlEntities
-            .deleteWhere {
-                PostalAddressSqlEntities.id eq id
-            } > 0
-    }
-
-    @RequiresTransactionContext
-    fun deleteByAddressBookItemId(id: Long): Boolean {
-        return PostalAddressSqlEntities
-            .deleteWhere {
-                PostalAddressSqlEntities.addressBookItemId eq id
-            } > 0
-    }
-
-    @RequiresTransactionContext
-    fun count(): Long {
-        return PostalAddressSqlEntities
-            .selectAll()
-            .count()
     }
 }

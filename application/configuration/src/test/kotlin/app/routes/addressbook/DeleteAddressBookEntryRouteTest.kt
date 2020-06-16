@@ -13,7 +13,7 @@ import ports.output.errors.ResourceNotFoundException
 
 object DeleteAddressBookEntryRouteTest : AppRouteSpek({
 
-    describe("HTTP DELETE /addressBookItem/:id") {
+    describe("HTTP DELETE /addressBookEntries/:id") {
         context("with record id not in database") {
             it("returns HTTP 204 No Content with existing record") {
                 withApp {

@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 val kotlinLanguageVersion: String by project
 val koinVersion: String by project
 val hikaricpVersion: String by project
-val muloggingVersion: String by project
+val inlineLoggerVersion: String by project
 val logbackVersion: String by project
 val spekVersion: String by project
 val junitJupiterVersion: String by project
@@ -66,7 +66,7 @@ subprojects {
 
     dependencies {
         implementation(kotlin("stdlib-jdk8"))
-        implementation("io.github.microutils:kotlin-logging:$muloggingVersion")
+        implementation("com.michael-bull.kotlin-inline-logger:kotlin-inline-logger:$inlineLoggerVersion")
         implementation("ch.qos.logback:logback-classic:$logbackVersion")
         implementation("org.koin:koin-core:$koinVersion")
 
@@ -75,7 +75,7 @@ subprojects {
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
         testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
         testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spekVersion")
-        testImplementation(gradleTestKit())
+//        testImplementation(gradleTestKit())
     }
 
     ktlint {
