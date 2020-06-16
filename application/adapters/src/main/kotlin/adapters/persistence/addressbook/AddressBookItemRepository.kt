@@ -10,7 +10,7 @@ import org.jetbrains.exposed.sql.selectAll
 
 private val logger = KotlinLogging.logger { }
 
-internal class AddressBookItemRepository {
+class AddressBookItemRepository {
     @RequiresTransactionContext
     fun getByIdOrNull(id: Long): AddressBookItemSqlEntity? {
         return AddressBookItemSqlEntities

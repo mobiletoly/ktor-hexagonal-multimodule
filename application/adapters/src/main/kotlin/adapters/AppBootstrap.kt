@@ -1,10 +1,10 @@
 package adapters
 
 import adapters.persistence.DatabaseErrorInspector
-import adapters.web.rest.RestGenericException
-import adapters.web.rest.respondRestException
-import adapters.web.rest.throwRestException
-import adapters.web.rest.toRestErrorResponse
+import adapters.primary.web.util.RestGenericException
+import adapters.primary.web.util.respondRestException
+import adapters.primary.web.util.throwRestException
+import adapters.primary.web.util.toRestErrorResponse
 import adapters.util.setProjectDefaults
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
@@ -28,7 +28,7 @@ import io.ktor.response.respond
 import mu.KotlinLogging
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.koin.ktor.ext.inject
-import ports.output.DomainException
+import ports.output.errors.DomainException
 import shared.util.e
 import java.util.UUID
 

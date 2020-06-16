@@ -1,4 +1,4 @@
-package adapters.web.rest
+package adapters.primary.web.util
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.exc.InvalidFormatException

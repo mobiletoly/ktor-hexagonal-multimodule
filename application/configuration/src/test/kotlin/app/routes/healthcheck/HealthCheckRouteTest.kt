@@ -1,4 +1,4 @@
-package app.routes
+package app.routes.healthcheck
 
 import adapters.config.AppConfig
 import app.AppRouteSpek
@@ -10,14 +10,14 @@ import io.ktor.server.testing.handleRequest
 import org.amshove.kluent.`should be equal to`
 import org.koin.ktor.ext.inject
 import org.spekframework.spek2.style.specification.describe
-import ports.output.healthcheck.HealthCheckResponseDto
 import ports.input.util.DateSupplier
+import ports.output.healthcheck.HealthCheckResponseDto
 
 object HealthCheckRouteTest : AppRouteSpek({
 
     describe("HTTP GET /health") {
         context("when application is healthy") {
-            it("returns healthy healthcheck response") {
+            it("returns healthy status") {
                 withApp {
                     with(handleRequest(HttpMethod.Get, "/health")) {
                         val dateSupplier: DateSupplier by application.inject()

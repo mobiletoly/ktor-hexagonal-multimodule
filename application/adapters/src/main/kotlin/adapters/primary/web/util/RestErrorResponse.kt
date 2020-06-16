@@ -1,13 +1,13 @@
-package adapters.web.rest
+package adapters.primary.web.util
 
 import adapters.persistence.DatabaseErrorInspector
 import adapters.persistence.DatabaseErrorState
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.exposed.exceptions.ExposedSQLException
-import ports.output.DomainException
-import ports.output.ResourceNotFoundException
+import ports.output.errors.DomainException
+import ports.output.errors.ResourceNotFoundException
 
-internal data class RestErrorResponse(
+data class RestErrorResponse(
     val type: String,
     val title: String,
     val status: Int,

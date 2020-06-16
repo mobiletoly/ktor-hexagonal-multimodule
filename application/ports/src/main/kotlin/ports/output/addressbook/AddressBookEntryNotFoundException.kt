@@ -1,6 +1,6 @@
 package ports.output.addressbook
 
-import ports.output.ResourceNotFoundException
+import ports.output.errors.ResourceNotFoundException
 
 class AddressBookEntryNotFoundException(
     val searchCriteria: String

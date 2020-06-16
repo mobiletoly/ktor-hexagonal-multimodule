@@ -1,9 +1,9 @@
-package adapters.web.routes.addressbook
+package adapters.primary.web.routes.addressbook
 
-import adapters.web.rest.longParameter
-import adapters.web.rest.receiveValidated
-import adapters.web.routes.addressbook.dto.AddressBookEntryResponseDto
-import adapters.web.routes.addressbook.dto.SaveAddressBookEntryRequestDto
+import adapters.primary.web.util.longParameter
+import adapters.primary.web.util.receiveValidated
+import adapters.primary.web.routes.addressbook.dto.AddressBookEntryResponseDto
+import adapters.primary.web.routes.addressbook.dto.SaveAddressBookEntryRequestDto
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.http.HttpHeaders

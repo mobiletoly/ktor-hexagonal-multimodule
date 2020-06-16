@@ -1,6 +1,6 @@
-package adapters.web.routes.addressbook
+package adapters.primary.web.routes.addressbook
 
-import adapters.web.routes.addressbook.dto.AddressBookEntryResponseDto
+import adapters.primary.web.routes.addressbook.dto.AddressBookEntryResponseDto
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.http.HttpHeaders

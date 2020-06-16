@@ -1,4 +1,4 @@
-package adapters.web.rest
+package adapters.primary.web.util
 
 import io.ktor.http.HttpStatusCode
 import java.lang.RuntimeException

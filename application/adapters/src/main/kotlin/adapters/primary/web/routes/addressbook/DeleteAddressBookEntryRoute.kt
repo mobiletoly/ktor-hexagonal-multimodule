@@ -1,6 +1,6 @@
-package adapters.web.routes.addressbook
+package adapters.primary.web.routes.addressbook
 
-import adapters.web.rest.longParameter
+import adapters.primary.web.util.longParameter
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
@@ -25,7 +25,7 @@ class DeleteAddressBookEntryRoute(application: Application) {
                     deleteAddressBookEntryUseCase.deleteAddressBookEntry(
                         DeleteAddressBookEntryUseCaseCommand(id = id)
                     )
-                    call.respond(HttpStatusCode.OK, "")
+                    call.respond(HttpStatusCode.NoContent, "")
                 }
             }
         }

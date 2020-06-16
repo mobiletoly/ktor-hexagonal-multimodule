@@ -1,6 +1,6 @@
 package adapters.remoting
 
-import adapters.web.rest.RestExternalServiceCallException
+import adapters.primary.web.util.RestExternalServiceCallException
 import adapters.util.sharedJsonMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.client.HttpClient

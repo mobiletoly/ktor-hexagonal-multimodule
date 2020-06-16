@@ -1,4 +1,4 @@
-package adapters.web.routes.healthcheck
+package adapters.primary.web.routes.healthcheck
 
 import adapters.services.healthcheck.HealthCheckService
 import io.ktor.application.Application

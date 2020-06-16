@@ -1,10 +1,4 @@
-package ports.output
-
-open class DomainException(
-    val errorType: String,
-    val title: String,
-    val detail: String
-) : RuntimeException(detail)
+package ports.output.errors
 
 open class ResourceNotFoundException(
     title: String,

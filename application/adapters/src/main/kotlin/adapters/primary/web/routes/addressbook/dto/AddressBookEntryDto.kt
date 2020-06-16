@@ -1,4 +1,4 @@
-package adapters.web.routes.addressbook.dto
+package adapters.primary.web.routes.addressbook.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import ports.models.AddressBookEntry
@@ -25,13 +25,12 @@ data class AddressBookEntryResponseDto(
     val id: Long,
     val firstName: String,
     val lastName: String,
-    @JsonProperty("gender")
-    val genderDto: GenderDto?,
+    val gender: GenderDto?,
     val age: Int?,
     val phoneNumber: String,
     val email: String,
     @JsonProperty("address")
-    val postalAddressDto: PostalAddressResponseDto?
+    val postalAddress: PostalAddressResponseDto?
 ) {
     data class PostalAddressResponseDto(
         val address1: String,
@@ -51,11 +50,11 @@ data class AddressBookEntryResponseDto(
                     id = id!!,
                     firstName = firstName,
                     lastName = lastName,
-                    genderDto = gender?.let { GenderDto.fromGender(it) },
+                    gender = gender?.let { GenderDto.fromGender(it) },
                     age = age,
                     phoneNumber = phoneNumber,
                     email = email,
-                    postalAddressDto = postalAddress?.let {
+                    postalAddress = postalAddress?.let {
                         PostalAddressResponseDto(
                             address1 = it.address1,
                             address2 = it.address2,

@@ -1,4 +1,4 @@
-package adapters.web.routes.addressbook.dto
+package adapters.primary.web.routes.addressbook.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import ports.models.AddressBookEntry
