@@ -21,8 +21,8 @@ dependencies {
     implementation(project(":application:adapters"))
     implementation(project(":application:core"))
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation("org.koin:koin-ktor:$koinVersion")
-    implementation("org.koin:koin-logger-slf4j:$koinVersion")
+    implementation("io.insert-koin:koin-ktor:$koinVersion")
+    implementation("io.insert-koin:koin-logger-slf4j:$koinVersion")
     implementation("com.zaxxer:HikariCP:$hikaricpVersion")
 
     testImplementation("io.ktor:ktor-jackson:$ktorVersion")

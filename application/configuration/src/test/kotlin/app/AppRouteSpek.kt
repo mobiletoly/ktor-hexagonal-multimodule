@@ -10,7 +10,7 @@ import io.ktor.application.install
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.withTestApplication
 import kotlinx.coroutines.runBlocking
-import org.koin.core.context.KoinContextHandler
+import org.koin.core.context.GlobalContext
 import org.koin.dsl.module
 import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.get
@@ -56,7 +56,7 @@ abstract class AppRouteSpek(val appRoot: Root.() -> Unit) : Spek({
                     }
                     val dataSource: DataSource = application.get()
                     (dataSource as HikariDataSource).close()
-                    KoinContextHandler.stop()
+                    GlobalContext.stopKoin()
                 }
             }
         }
@@ -73,7 +73,7 @@ abstract class AppRouteSpek(val appRoot: Root.() -> Unit) : Spek({
                 //    put("app-config.main-db.hikari.autoCommit", true)
             }
             val config = ConfigFactory.parseProperties(mainConfigProperties)
-            KoinContextHandler.stop()
+            GlobalContext.stopKoin()
             application.install(Koin) {
                 SLF4JLogger()
                 modules(

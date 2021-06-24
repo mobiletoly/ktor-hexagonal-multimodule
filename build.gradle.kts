@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
-
 val kotlinLanguageVersion: String by project
 val koinVersion: String by project
 val hikaricpVersion: String by project
@@ -12,7 +10,7 @@ val ktlintVersion: String by project
 plugins {
     base
     jacoco
-    kotlin("jvm")
+    id("org.jetbrains.kotlin.jvm")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
@@ -26,12 +24,9 @@ allprojects {
     version = "1.0-SNAPSHOT"
 
     repositories {
-        mavenLocal()
         jcenter()
+        mavenLocal()
         maven(url = "https://plugins.gradle.org/m2/")
-        maven(url = "https://dl.bintray.com/kotlin/ktor")
-        maven(url = "https://dl.bintray.com/kotlin/exposed")
-        maven(url = "https://dl.bintray.com/spekframework/spek-dev")
         maven(url = "https://jitpack.io")
     }
 
@@ -47,17 +42,6 @@ allprojects {
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
-    tasks.withType<KotlinCompile<*>> {
-        kotlinOptions {
-            languageVersion = kotlinLanguageVersion
-            apiVersion = kotlinLanguageVersion
-            (this as org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions).jvmTarget = JavaVersion.VERSION_1_8.toString()
-            freeCompilerArgs = listOfNotNull(
-                "-Xopt-in=kotlin.RequiresOptIn"
-            )
-        }
-    }
-
     tasks.withType<Test> {
         useJUnitPlatform {
             includeEngines("spek2")
@@ -68,7 +52,7 @@ subprojects {
         implementation(kotlin("stdlib-jdk8"))
         implementation("com.michael-bull.kotlin-inline-logger:kotlin-inline-logger:$inlineLoggerVersion")
         implementation("ch.qos.logback:logback-classic:$logbackVersion")
-        implementation("org.koin:koin-core:$koinVersion")
+        implementation("io.insert-koin:koin-core:$koinVersion")
 
         testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
@@ -83,5 +67,16 @@ subprojects {
         outputToConsole.set(true)
         enableExperimentalRules.set(true)
         disabledRules.set(setOf("import-ordering"))
+    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        freeCompilerArgs = listOfNotNull(
+            "-Xopt-in=kotlin.RequiresOptIn",
+            "-Xinline-classes",
+            "-Xallow-result-return-type"
+        )
     }
 }

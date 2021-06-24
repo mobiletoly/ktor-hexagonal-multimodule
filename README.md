@@ -2,20 +2,19 @@
 
 Backend API service built using hexagonal architecture and implemented with Kotlin's ktor.
 This code may seems like an overkill for a simple application such as Address Book, but treat
-is a foundation for much larger services. 
+it as a foundation for much larger services.
 
 # Overview
 
 ## What tools/frameworks do we use?
 
 - **gradle** - our build system of choice (using Kotlin DSL)
-- **kotlin 1.3** - our language of choice
+- **kotlin 1.5** - our language of choice
 - **ktor** for creating web application: https://github.com/ktorio/ktor
 - **ExposedSQL** to access database: https://github.com/JetBrains/Exposed
 - **HikariCP** for high-performance JDBC connection pool: https://github.com/brettwooldridge/HikariCP
 - **Koin** for dependency injection: https://insert-koin.io/ 
 - **PostgreSQL** for database: https://www.postgresql.org/
-- **kotlin-logging** for logging: https://github.com/MicroUtils/kotlin-logging
 - **HOCON** for application configuration: https://github.com/lightbend/config/
 - **jackson** for JSON serialization/deserialization: https://github.com/FasterXML/jacksons
 

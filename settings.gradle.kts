@@ -8,8 +8,8 @@ pluginManagement {
         maven(url = "https://jitpack.io")
     }
     plugins {
-        kotlin("jvm") version "1.3.72"
-        id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
+        id("org.jetbrains.kotlin.jvm") version "1.5.20"
+        id("org.jlleitschuh.gradle.ktlint") version "10.1.0"
         id("com.github.johnrengelman.shadow") version "5.2.0"
     }
 }
