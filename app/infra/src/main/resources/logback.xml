@@ -1,0 +1,17 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} %-5level %logger - CallRequestId=%X{CallRequestId} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+    <logger name="io.grpc.netty" level="INFO"/>
+    <logger name="io.netty" level="INFO"/>
+    <logger name="com.zaxxer.hikari.pool.HikariPool" level="WARN"/>
+    <logger name="io.ktor.client.HttpClient" level="WARN"/>
+
+</configuration>

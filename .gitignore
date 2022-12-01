@@ -1,32 +1,8 @@
-hs_err_*.log
-
-# IntelliJ
-.idea
-*.iml
-*.ipr
-out
-/**/.idea_modules/
-
-# Crashlytics plugin (for Android Studio and IntelliJ)
-com_crashlytics_export_strings.xml
-crashlytics.properties
-crashlytics-build.properties
-fabric.properties
-### Gradle template
+# Ignore Gradle project-specific cache directory
 .gradle
-/**/build/
 
-# Ignore Gradle GUI config
-gradle-app.setting
+# Ignore Gradle build output directory
+build
 
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
-
-# Cache of project
-.gradletasknamecache
-
-.tmp-files
-
-/dependency-check-report.html
-
-/.app-cache
+# Ignore IntelliJ files
+.idea

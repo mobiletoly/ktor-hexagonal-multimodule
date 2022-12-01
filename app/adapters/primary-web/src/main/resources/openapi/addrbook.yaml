@@ -1,0 +1,25 @@
+openapi: 3.0.0
+info:
+  title: Ktor Hexagonal Multimodule Address Book API
+  version: 0.0.1
+
+paths:
+  /health:
+    get:
+      summary: Basic health check
+      parameters:
+        - in: query
+          required: false
+          name: deep
+          description:
+            true if deep health check needs to be performed
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Health check response
+          content:
+            application/json:
+              schema:
+                $ref: './shared.yaml#/components/schemas/HealthResponse'

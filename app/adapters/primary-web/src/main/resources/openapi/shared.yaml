@@ -1,0 +1,20 @@
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      description: Organization info item
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          description:
+            overall system health
+        remoteService:
+          type: string
+          description:
+            address book remote service health
+        database:
+          type: string
+          description:
+            database health
