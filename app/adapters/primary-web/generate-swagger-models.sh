@@ -7,4 +7,4 @@ openapi-generator-cli generate \
     -o ./app/adapters/primary-web \
     --global-property=models \
     --additional-properties=serializationLibrary=kotlinx_serialization \
-    -p packageName=com.github.mobiletoly.addrbookhexktor.primaryweb
+    -p packageName=com.github.mobiletoly.addrbookhexktor.adapters.primaryweb

@@ -3,7 +3,9 @@
  */
 package com.github.mobiletoly.addrbookhexktor.infra
 
-import com.github.mobiletoly.addrbookhexktor.primaryweb.webBootstrap
+import com.github.mobiletoly.addrbookhexktor.adapters.env.envModule
+import com.github.mobiletoly.addrbookhexktor.adapters.primaryweb.webBootstrap
+import com.github.mobiletoly.addrbookhexktor.coreModule
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import org.koin.core.logger.Level
@@ -17,14 +19,11 @@ fun main(args: Array<String>) {
 fun Application.main() {
     install(Koin) {
         slf4jLogger(level = Level.DEBUG)
-//        modules(listOf(
-//            aaa
-//        ))
+        modules(
+            envModule,
+            coreModule,
+        )
     }
 
     webBootstrap()
 }
-
-//val allModule = arrayOf(
-//
-//)

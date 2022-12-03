@@ -13,7 +13,7 @@
     "UnusedImport"
 )
 
-package com.github.mobiletoly.addrbookhexktor.primaryweb.models
+package com.github.mobiletoly.addrbookhexktor.adapters.primaryweb.models
 
 
 import kotlinx.serialization.Serializable
@@ -24,6 +24,7 @@ import kotlinx.serialization.Contextual
  * Organization info item
  *
  * @param status overall system health
+ * @param version build version
  * @param remoteService address book remote service health
  * @param database database health
  */
@@ -34,6 +35,10 @@ data class HealthResponse (
     /* overall system health */
     @SerialName(value = "status")
     val status: kotlin.String,
+
+    /* build version */
+    @SerialName(value = "version")
+    val version: kotlin.String,
 
     /* address book remote service health */
     @SerialName(value = "remoteService")

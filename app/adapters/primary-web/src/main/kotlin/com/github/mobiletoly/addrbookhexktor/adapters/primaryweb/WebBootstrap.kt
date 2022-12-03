@@ -1,7 +1,7 @@
-package com.github.mobiletoly.addrbookhexktor.primaryweb
+package com.github.mobiletoly.addrbookhexktor.adapters.primaryweb
 
 import com.github.michaelbull.logging.InlineLogger
-import com.github.mobiletoly.addrbookhexktor.primaryweb.routes.health.healthRoute
+import com.github.mobiletoly.addrbookhexktor.adapters.primaryweb.routes.health.healthRoute
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json

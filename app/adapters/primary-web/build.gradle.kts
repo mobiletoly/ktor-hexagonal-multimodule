@@ -9,6 +9,8 @@ plugins {
 }
 
 dependencies {
+    api(project(":app:core"))
+
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
     implementation("io.ktor:ktor-server-cors:$ktorVersion")

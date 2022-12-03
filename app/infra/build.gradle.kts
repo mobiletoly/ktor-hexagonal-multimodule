@@ -10,7 +10,9 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":app:adapters:primary-web"))
+    api(project(":app:adapters:env"))
+    api(project(":app:adapters:primary-web"))
+    api(project(":app:core"))
 
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
