@@ -11,6 +11,8 @@ plugins {
 
 dependencies {
     api(project(":app:adapters:env"))
+    api(project(":app:adapters:persistence"))
+    api(project(":app:adapters:remoting"))
     api(project(":app:adapters:primary-web"))
     api(project(":app:core"))
 

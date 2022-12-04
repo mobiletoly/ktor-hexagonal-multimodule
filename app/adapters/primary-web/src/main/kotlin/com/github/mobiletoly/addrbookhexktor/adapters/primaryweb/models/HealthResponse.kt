@@ -29,7 +29,6 @@ import kotlinx.serialization.Contextual
  * @param database database health
  */
 @Serializable
-
 data class HealthResponse (
 
     /* overall system health */
@@ -47,6 +46,4 @@ data class HealthResponse (
     /* database health */
     @SerialName(value = "database")
     val database: kotlin.String? = null
-
 )
-

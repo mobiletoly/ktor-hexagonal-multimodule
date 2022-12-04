@@ -2,6 +2,7 @@ package com.github.mobiletoly.addrbookhexktor.adapters.primaryweb
 
 import com.github.michaelbull.logging.InlineLogger
 import com.github.mobiletoly.addrbookhexktor.adapters.primaryweb.routes.health.healthRoute
+import com.github.mobiletoly.addrbookhexktor.common.log.xRequestIdLogKey
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
@@ -20,7 +21,6 @@ import io.ktor.server.routing.routing
 import org.slf4j.event.Level
 import java.util.UUID
 
-private const val xRequestIdLogKey = "xRequestId"
 private val logger = InlineLogger()
 
 fun Application.webBootstrap() {

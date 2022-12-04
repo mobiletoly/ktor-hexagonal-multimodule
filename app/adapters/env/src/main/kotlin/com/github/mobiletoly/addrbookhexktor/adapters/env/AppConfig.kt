@@ -1,11 +1,12 @@
 package com.github.mobiletoly.addrbookhexktor.adapters.env
 
+import com.github.mobiletoly.addrbookhexktor.outport.DeploymentConfig
 import com.github.mobiletoly.addrbookhexktor.outport.GetDatabaseConfigPort
 import com.github.mobiletoly.addrbookhexktor.outport.GetDeploymentConfigPort
 import com.github.mobiletoly.addrbookhexktor.outport.GetRandomPersonServiceConfigPort
+import com.github.mobiletoly.addrbookhexktor.outport.RandomPersonServiceConfig
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
-import java.net.URL
 import java.util.Properties
 
 internal class AppConfig(deploymentEnv: String) :
@@ -26,9 +27,9 @@ internal class AppConfig(deploymentEnv: String) :
         this.config = rootConfig.getConfig("app-config")
     }
 
-    override val deployment: GetDeploymentConfigPort.Config by lazy {
+    override val deployment: DeploymentConfig by lazy {
         val node = config.getConfig("deployment")
-        GetDeploymentConfigPort.Config(
+        DeploymentConfig(
             env = node.getString("env"),
             version = node.getString("version"),
             buildNumber = node.getString("buildNumber"),
@@ -40,11 +41,11 @@ internal class AppConfig(deploymentEnv: String) :
         node.toProperties()
     }
 
-    override val randomPersonService: GetRandomPersonServiceConfigPort.Config by lazy {
+    override val randomPersonService: RandomPersonServiceConfig by lazy {
         val node = config.getConfig("random-person-service")
-        val url = node.getString("fetch-url")
-        GetRandomPersonServiceConfigPort.Config(
-            fetchUrl = URL(url),
+        RandomPersonServiceConfig(
+            fetchUrl = node.getString("fetch-url"),
+            apiKey = node.getString("api-key")
         )
     }
 

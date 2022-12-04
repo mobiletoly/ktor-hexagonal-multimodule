@@ -1,5 +1,4 @@
 val typesafeConfigVersion: String by rootProject
-val hikaricpVersion: String by rootProject
 
 plugins {
     id("com.github.mobiletoly.addrbookhexktor.kotlin-library-conventions")

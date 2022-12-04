@@ -4,7 +4,9 @@
 package com.github.mobiletoly.addrbookhexktor.infra
 
 import com.github.mobiletoly.addrbookhexktor.adapters.env.envModule
+import com.github.mobiletoly.addrbookhexktor.adapters.persistence.persistenceModule
 import com.github.mobiletoly.addrbookhexktor.adapters.primaryweb.webBootstrap
+import com.github.mobiletoly.addrbookhexktor.adapters.remoting.remotingModule
 import com.github.mobiletoly.addrbookhexktor.coreModule
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -22,6 +24,8 @@ fun Application.main() {
         modules(
             envModule,
             coreModule,
+            persistenceModule,
+            remotingModule,
         )
     }
 

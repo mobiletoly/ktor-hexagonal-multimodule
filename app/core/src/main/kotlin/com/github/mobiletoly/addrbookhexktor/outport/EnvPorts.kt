@@ -1,20 +1,24 @@
 package com.github.mobiletoly.addrbookhexktor.outport
 
-import java.net.URL
 import java.util.Properties
+
+data class RandomPersonServiceConfig(
+    val fetchUrl: String,
+    val apiKey: String,
+)
+
+data class DeploymentConfig(
+    val env: String,
+    val version: String,
+    val buildNumber: String,
+)
 
 interface GetDeploymentEnvPort {
     val deploymentEnv: String
 }
 
 interface GetDeploymentConfigPort {
-    val deployment: Config
-
-    data class Config(
-        val env: String,
-        val version: String,
-        val buildNumber: String,
-    )
+    val deployment: DeploymentConfig
 }
 
 interface GetDatabaseConfigPort {
@@ -22,9 +26,5 @@ interface GetDatabaseConfigPort {
 }
 
 interface GetRandomPersonServiceConfigPort {
-    val randomPersonService: Config
-
-    data class Config(
-        val fetchUrl: URL,
-    )
+    val randomPersonService: RandomPersonServiceConfig
 }
