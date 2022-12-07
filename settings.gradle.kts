@@ -4,7 +4,7 @@ include(
     "app:core",
     "app:common",
     "app:adapters:env",
-    "app:adapters:persistence",
+    "app:adapters:persist",
     "app:adapters:remoting",
     "app:adapters:primary-web",
 )

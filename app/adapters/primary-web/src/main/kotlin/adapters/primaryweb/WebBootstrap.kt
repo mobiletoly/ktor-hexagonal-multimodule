@@ -1,0 +1,112 @@
+package adapters.primaryweb
+
+import adapters.primaryweb.routes.healthRoute
+import adapters.primaryweb.routes.personRoute
+import adapters.primaryweb.util.RestGenericException
+import adapters.primaryweb.util.respondRestException
+import com.github.michaelbull.logging.InlineLogger
+import common.log.setXRequestId
+import common.log.xRequestIdLogKey
+import core.errors.DomainException
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.plugins.callid.CallId
+import io.ktor.server.plugins.callid.callId
+import io.ktor.server.plugins.callid.callIdMdc
+import io.ktor.server.plugins.callloging.CallLogging
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.cors.routing.CORS
+import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.request.header
+import io.ktor.server.request.path
+import io.ktor.server.request.uri
+import io.ktor.server.response.respond
+import io.ktor.server.routing.routing
+import org.slf4j.event.Level
+import java.util.UUID
+
+private val logger = InlineLogger()
+
+fun Application.webBootstrap() {
+
+    install(ContentNegotiation) {
+        json()
+    }
+
+    install(CallLogging) {
+        level = Level.DEBUG
+        filter { call -> call.request.path().startsWith("/") }
+        callIdMdc(xRequestIdLogKey)
+    }
+
+    install(CallId) {
+//        header(HttpHeaders.XRequestId)
+        generate {
+            val requestId = it.request.header(HttpHeaders.XRequestId)
+            if (requestId.isNullOrEmpty()) {
+                "${UUID.randomUUID()}"
+            } else {
+                requestId
+            }
+        }
+        verify { callId: String ->
+            callId.isNotEmpty()
+        }
+    }
+
+    install(CORS) {
+        anyHost()
+        allowCredentials = true
+        allowNonSimpleContentTypes = true
+        allowMethod(HttpMethod.Get)
+        allowMethod(HttpMethod.Post)
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Delete)
+        allowMethod(HttpMethod.Patch)
+        allowMethod(HttpMethod.Options)
+        allowHeader(HttpHeaders.ContentType)
+        allowHeader(HttpHeaders.Authorization)
+        allowHeader(HttpHeaders.AccessControlAllowHeaders)
+        allowHeader(HttpHeaders.AccessControlAllowOrigin)
+    }
+
+    // Return proper HTTP error: https://ktor.io/features/status-pages.html
+    // In this block we are mapping Domain and Adapter exceptions into proper HTTP error response.
+    install(StatusPages) {
+        exception<Throwable> { call, e ->
+            logger.error(e) { "StatusPages/exception(): Error to be returned to a caller" }
+            // by some reasons MDC value is gone when error happens this is to reinstantiate it
+            setXRequestId(call.callId)
+            when (e) {
+                is DomainException -> {
+                    val errorResponse = e.toRestGenericException().toRestErrorResponse(path = call.request.uri)
+                    call.respond(
+                        status = HttpStatusCode.fromValue(errorResponse.status),
+                        message = errorResponse
+                    )
+                }
+                is RestGenericException -> {
+                    call.respondRestException(e)
+                }
+                else -> {
+                    call.respond(
+                        status = HttpStatusCode.InternalServerError,
+                        message = e.message ?: e.toString()
+                    )
+                }
+            }
+        }
+    }
+
+    routing {
+        trace {
+            logger.debug { "routing/trace(): ${it.buildText()}" }
+        }
+        healthRoute()
+        personRoute()
+    }
+}

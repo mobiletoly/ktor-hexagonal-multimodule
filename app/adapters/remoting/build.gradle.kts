@@ -2,7 +2,7 @@ val typesafeConfigVersion: String by rootProject
 val ktorVersion: String by rootProject
 
 plugins {
-    id("com.github.mobiletoly.addrbookhexktor.kotlin-library-conventions")
+    id("kotlin-library-conventions")
     kotlin("plugin.serialization") version "1.7.20"
 }
 

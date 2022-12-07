@@ -1,5 +1,5 @@
 plugins {
-    id("com.github.mobiletoly.addrbookhexktor.kotlin-library-conventions")
+    id("kotlin-library-conventions")
 }
 
 dependencies {

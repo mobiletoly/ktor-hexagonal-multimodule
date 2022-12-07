@@ -22,4 +22,141 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './shared.yaml#/components/schemas/HealthResponse'
+                $ref: '#/components/schemas/HealthResponse'
+        '4XX':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: ''#/components/schemas/RestErrorResponse'
+        '5XX':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: ''#/components/schemas/RestErrorResponse'
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      description: Organization info item
+      required:
+        - status
+        - version
+      properties:
+        status:
+          type: string
+          description:
+            overall system health
+        version:
+          type: string
+          description:
+            build version
+        remoteService:
+          type: string
+          description:
+            address book remote service health
+        database:
+          type: string
+          description:
+            database health
+
+    PersonResponse:
+      type: object
+      description: Response with person information
+      required:
+        - id
+        - firstName
+        - lastName
+        - phoneNumber
+        - email
+      properties:
+        id:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        lastName:
+          type: string
+        gender:
+          $ref: Gender
+        age:
+          type: integer
+        phoneNumber:
+          type: string
+        email:
+          type: string
+          format: email
+        postalAddress:
+          $ref: PostalAddressResponse
+
+    Gender:
+      type: string
+      enum:
+        - male
+        - female
+
+    PostalAddressResponse:
+      type: object
+      description: Address
+      required:
+        - address1
+        - city
+        - state
+        - country
+      properties:
+        address1:
+          type: string
+        address2:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+
+    RestErrorResponse:
+      type: object
+      description: Organization info item
+      required:
+        - type
+        - title
+        - status
+        - detail
+      properties:
+        type:
+          type: string
+          description:
+            error type
+        title:
+          type: string
+          description:
+            error title
+        status:
+          type: integer
+          format: int32
+          description:
+            error HTTP status code
+        detail:
+          type: string
+          description:
+            error detail
+        instance:
+          type: string
+          description:
+            error instance
+        specifics:
+          type: array
+          items:
+            $ref: 'RestErrorSpecificsResponse'
+
+    RestErrorSpecificsResponse:
+      required:
+        - name
+      properties:
+        key:
+          type: string
+        value:
+          type: string

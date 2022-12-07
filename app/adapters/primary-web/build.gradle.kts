@@ -4,7 +4,7 @@ val jacksonVersion: String by rootProject
 val swaggerAnnotationsVersion: String by rootProject
 
 plugins {
-    id("com.github.mobiletoly.addrbookhexktor.kotlin-library-conventions")
+    id("kotlin-library-conventions")
     kotlin("plugin.serialization") version "1.7.20"
 }
 
@@ -15,6 +15,8 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
     implementation("io.ktor:ktor-server-cors:$ktorVersion")
+    implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+    implementation("io.ktor:ktor-server-host-common-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-call-logging-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-call-id-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")

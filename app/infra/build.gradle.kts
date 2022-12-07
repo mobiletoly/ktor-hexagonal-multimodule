@@ -6,12 +6,12 @@ val ktorVersion: String by rootProject
 val koinVersion: String by rootProject
 
 plugins {
-    id("com.github.mobiletoly.addrbookhexktor.kotlin-application-conventions")
+    id("kotlin-application-conventions")
 }
 
 dependencies {
     api(project(":app:adapters:env"))
-    api(project(":app:adapters:persistence"))
+    api(project(":app:adapters:persist"))
     api(project(":app:adapters:remoting"))
     api(project(":app:adapters:primary-web"))
     api(project(":app:core"))
@@ -23,5 +23,5 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass.set("com.github.mobiletoly.addrbookhexktor.infra.AppKt")
+    mainClass.set("infra.AppKt")
 }
