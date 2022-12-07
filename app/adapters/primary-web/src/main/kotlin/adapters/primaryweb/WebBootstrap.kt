@@ -16,7 +16,6 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.plugins.callid.CallId
 import io.ktor.server.plugins.callid.callId
-import io.ktor.server.plugins.callid.callIdMdc
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
@@ -40,11 +39,12 @@ fun Application.webBootstrap() {
     install(CallLogging) {
         level = Level.DEBUG
         filter { call -> call.request.path().startsWith("/") }
-        callIdMdc(xRequestIdLogKey)
+        mdc(xRequestIdLogKey) { call ->
+            call.response.headers[HttpHeaders.XRequestId]
+        }
     }
 
     install(CallId) {
-//        header(HttpHeaders.XRequestId)
         generate {
             val requestId = it.request.header(HttpHeaders.XRequestId)
             if (requestId.isNullOrEmpty()) {
@@ -53,9 +53,7 @@ fun Application.webBootstrap() {
                 requestId
             }
         }
-        verify { callId: String ->
-            callId.isNotEmpty()
-        }
+        replyToHeader(HttpHeaders.XRequestId)
     }
 
     install(CORS) {
@@ -78,9 +76,8 @@ fun Application.webBootstrap() {
     // In this block we are mapping Domain and Adapter exceptions into proper HTTP error response.
     install(StatusPages) {
         exception<Throwable> { call, e ->
-            logger.error(e) { "StatusPages/exception(): Error to be returned to a caller" }
-            // by some reasons MDC value is gone when error happens this is to reinstantiate it
             setXRequestId(call.callId)
+            logger.error(e) { "StatusPages/exception(): Error to be returned to a caller" }
             when (e) {
                 is DomainException -> {
                     val errorResponse = e.toRestGenericException().toRestErrorResponse(path = call.request.uri)

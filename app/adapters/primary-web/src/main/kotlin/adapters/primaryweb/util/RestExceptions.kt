@@ -26,56 +26,15 @@ internal open class RestGenericException(
         "detail=\"$detail\", specifics=$specifics"
 }
 
-internal data class RestMissingRequiredJsonFieldException(
-    val fieldName: String,
-    val fieldType: String?
-) : RestGenericException(
+internal class RestBadInputException(message: String) : RestGenericException(
     type = ERROR_TYPE,
-    title = "Missing required JSON field",
+    title = "Bad request",
     status = HttpStatusCode.BadRequest,
-    detail = "Validate JSON payload for mandatory fields",
-    specifics = mapOf(
-        "jsonField" to mapOf(
-            "name" to fieldName,
-            "type" to fieldType
-        )
-    )
+    detail = message,
+    specifics = null,
 ) {
     companion object {
-        const val ERROR_TYPE = "/errors/missing-required-json-field"
-    }
-}
-
-internal data class RestInvalidFormatJsonFieldException(
-    val fieldName: String,
-    val fieldType: String?
-) : RestGenericException(
-    type = ERROR_TYPE,
-    title = "Invalid format of JSON field",
-    status = HttpStatusCode.BadRequest,
-    detail = "Validate JSON field has valid format",
-    specifics = mapOf(
-        "jsonField" to mapOf(
-            "name" to fieldName,
-            "type" to fieldType
-        )
-    )
-) {
-    companion object {
-        const val ERROR_TYPE = "/errors/invalid-format-json-field"
-    }
-}
-
-internal data class RestErrorParsingJsonException(
-    val detail: String
-) : RestGenericException(
-    type = ERROR_TYPE,
-    title = "Error parsing JSON payload",
-    status = HttpStatusCode.BadRequest,
-    detail = detail
-) {
-    companion object {
-        const val ERROR_TYPE = "/errors/failed-parsing-json"
+        const val ERROR_TYPE = "/errors/bad-input"
     }
 }
 

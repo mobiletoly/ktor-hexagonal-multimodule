@@ -3,6 +3,7 @@ package adapters.primaryweb.util
 import com.github.michaelbull.logging.InlineLogger
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
+import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.request.receive
 import io.ktor.server.request.uri
 import io.ktor.server.response.respond
@@ -12,8 +13,9 @@ private val logger = InlineLogger()
 internal suspend inline fun <reified T : Any> ApplicationCall.receiveValidated(): T {
     return try {
         receive()
-    } catch (e: Exception) {
-        handleReceiveWithValidationException(e)
+    } catch (e: BadRequestException) {
+        logger.error(e) { "ApplicationCall.receiveValidated(): Bad request" }
+        throw RestBadInputException(e.message ?: e.toString())
     }
 }
 
@@ -39,38 +41,8 @@ internal fun ApplicationCall.longParameter(name: String): Long {
 private fun raiseInvalidRequestParameterFormatException(name: String, e: Exception): Nothing {
     throw RestInvalidRequestParameterFormatException(
         paramName = name,
-        detail = e.message ?: "No details"
+        detail = e.message ?: e.toString()
     )
-}
-
-private fun handleReceiveWithValidationException(e: Exception): Nothing {
-    logger.warn {
-        "handleReceiveWithValidationException(): Exception has been raised while deserializing payload"
-    }
-    // TODO
-    throw e
-//    when (e) {
-//        is MissingKotlinParameterException -> {
-//            throw RestMissingRequiredJsonFieldException(
-//                fieldName = e.parameter.name ?: "UnknownField",
-//                fieldType = e.parameter.type.toString()
-//            )
-//        }
-//        is InvalidFormatException -> {
-//            throw RestInvalidFormatJsonFieldException(
-//                fieldName = e.path.lastOrNull()?.fieldName ?: "UnknownField",
-//                fieldType = e.targetType.toString()
-//            )
-//        }
-//        is JsonProcessingException -> {
-//            throw RestErrorParsingJsonException(
-//                detail = e.message ?: "No details"
-//            )
-//        }
-//        else -> {
-//            throw e
-//        }
-//    }
 }
 
 internal suspend fun ApplicationCall.respondRestException(ex: RestGenericException) {

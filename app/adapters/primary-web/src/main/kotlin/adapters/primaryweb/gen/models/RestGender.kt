@@ -25,7 +25,7 @@ import kotlinx.serialization.Serializable
  * Values: male,female
  */
 @Serializable
-enum class Gender(val value: kotlin.String) {
+enum class RestGender(val value: kotlin.String) {
 
     @SerialName(value = "male")
     male("male"),
@@ -46,12 +46,12 @@ enum class Gender(val value: kotlin.String) {
         /**
          * Converts the provided [data] to a [String] on success, null otherwise.
          */
-        fun encode(data: kotlin.Any?): kotlin.String? = if (data is Gender) "$data" else null
+        fun encode(data: kotlin.Any?): kotlin.String? = if (data is RestGender) "$data" else null
 
         /**
-         * Returns a valid [Gender] for [data], null otherwise.
+         * Returns a valid [RestGender] for [data], null otherwise.
          */
-        fun decode(data: kotlin.Any?): Gender? = data?.let {
+        fun decode(data: kotlin.Any?): RestGender? = data?.let {
           val normalizedData = "$it".lowercase()
           values().firstOrNull { value ->
             it == value || normalizedData == "$value".lowercase()

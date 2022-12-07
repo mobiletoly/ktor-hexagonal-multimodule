@@ -1,5 +1,7 @@
 package core.models
 
+import core.errors.ResourceNotFoundException
+
 data class PersonEntry(
     val id: Long? = null,
     val firstName: String,
@@ -30,4 +32,7 @@ data class PersonEntry(
 
 class PersonEntryNotFoundException(
     searchCriteria: String
-) : RuntimeException("Person entry not found for search criteria: $searchCriteria")
+) : ResourceNotFoundException(
+    title = "Requested person not found",
+    detail = "Person entry not found for search criteria: $searchCriteria",
+)

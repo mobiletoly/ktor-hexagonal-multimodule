@@ -1,20 +1,25 @@
 package adapters.primaryweb.routes
 
-import adapters.primaryweb.gen.models.Gender
-import adapters.primaryweb.gen.models.PersonResponse
-import adapters.primaryweb.gen.models.PostalAddressResponse
+import adapters.primaryweb.gen.models.RestSavePersonRequest
+import adapters.primaryweb.toPersonEntry
+import adapters.primaryweb.toResponse
 import adapters.primaryweb.util.longParameter
+import adapters.primaryweb.util.receiveValidated
 import com.github.michaelbull.logging.InlineLogger
-import core.models.PersonEntry
 import core.usecase.AddPersonUsecase
+import core.usecase.DeletePersonUsecase
+import core.usecase.LoadAllPersonsUsecase
 import core.usecase.LoadPersonUsecase
+import core.usecase.UpdatePersonUsecase
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.Routing
+import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
+import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import org.koin.ktor.ext.inject
 
@@ -23,7 +28,10 @@ private val logger = InlineLogger()
 internal fun Routing.personRoute() {
     route("/persons") {
         getPerson()
+        getAllPersons()
         addPerson()
+        updatePerson()
+        deletePerson()
     }
 }
 
@@ -33,8 +41,20 @@ private fun Route.getPerson() {
     get("{id}") {
         val id = call.longParameter("id")
         val personEntry = loadPersonUsecase.loadPerson(id = id)
-        val response = personEntry.toResponse()
-        call.respond(status = HttpStatusCode.OK, message = response)
+        val restPersonResp = personEntry.toResponse()
+        call.respond(status = HttpStatusCode.OK, message = restPersonResp)
+    }
+}
+
+private fun Route.getAllPersons() {
+    val loadAllPersonsUsecase by inject<LoadAllPersonsUsecase>()
+
+    get {
+        val allPersonEntries = loadAllPersonsUsecase.loadAllPersons()
+        val restPersonsResp = allPersonEntries.map {
+            it.toResponse()
+        }
+        call.respond(status = HttpStatusCode.OK, message = restPersonsResp)
     }
 }
 
@@ -42,52 +62,33 @@ private fun Route.addPerson() {
     val addPersonUsecase by inject<AddPersonUsecase>()
 
     post {
-        val person = PersonEntry(
-            firstName = "Toly",
-            lastName = "Pochkin",
-            gender = PersonEntry.Gender.MALE,
-            age = 43,
-            phoneNumber = "+1-503-999-9999",
-            email = "email@example.com",
-            postalAddress = PersonEntry.PostalAddress(
-                address1 = "111 Some Street",
-                address2 = "Unit 999",
-                city = "Portland",
-                state = "OR",
-                country = "USA",
-            ),
-        )
-        try {
-            addPersonUsecase.addPerson(entry = person)
-        } catch (e: Exception) {
-            logger.warn(e) { "<-------------------------------->" }
-            throw e
-        }
+        val restPersonReq = call.receiveValidated<RestSavePersonRequest>()
+        val personToSave = restPersonReq.toPersonEntry(id = null)
+        val person = addPersonUsecase.addPerson(entry = personToSave)
+        val restPersonResp = person.toResponse()
+        call.respond(status = HttpStatusCode.OK, message = restPersonResp)
     }
 }
 
-private fun PersonEntry.toResponse(): PersonResponse = with(this) {
-    PersonResponse(
-        id = id!!,
-        firstName = firstName,
-        lastName = lastName,
-        gender = gender?.toResponse(),
-        age = age,
-        phoneNumber = phoneNumber,
-        email = email,
-        postalAddress = postalAddress?.let {
-            PostalAddressResponse(
-                address1 = it.address1,
-                address2 = it.address2,
-                city = it.city,
-                state = it.state,
-                country = it.country
-            )
-        }
-    )
+private fun Route.updatePerson() {
+    val updatePersonUsecase by inject<UpdatePersonUsecase>()
+
+    put ("{id}") {
+        val id = call.longParameter("id")
+        val restPersonReq = call.receiveValidated<RestSavePersonRequest>()
+        val personToSave = restPersonReq.toPersonEntry(id = id)
+        val person = updatePersonUsecase.updatePerson(entry = personToSave)
+        val restPersonResp = person.toResponse()
+        call.respond(status = HttpStatusCode.OK, message = restPersonResp)
+    }
 }
 
-private fun PersonEntry.Gender.toResponse(): Gender = when (this) {
-    PersonEntry.Gender.MALE -> Gender.male
-    PersonEntry.Gender.FEMALE -> Gender.female
+private fun Route.deletePerson() {
+    val deletePersonUsecase by inject<DeletePersonUsecase>()
+
+    delete ("{id}") {
+        val id = call.longParameter("id")
+        val person = deletePersonUsecase.deletePerson(id = id)
+        call.respond(status = HttpStatusCode.NoContent, message = "")
+    }
 }

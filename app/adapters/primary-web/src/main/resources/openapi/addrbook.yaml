@@ -22,7 +22,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HealthResponse'
+                $ref: '#/components/schemas/RestHealthResponse'
         '4XX':
           description: Client error
           content:
@@ -38,7 +38,7 @@ paths:
 
 components:
   schemas:
-    HealthResponse:
+    RestHealthResponse:
       type: object
       description: Organization info item
       required:
@@ -62,7 +62,7 @@ components:
           description:
             database health
 
-    PersonResponse:
+    RestPersonResponse:
       type: object
       description: Response with person information
       required:
@@ -80,7 +80,7 @@ components:
         lastName:
           type: string
         gender:
-          $ref: Gender
+          $ref: RestGender
         age:
           type: integer
         phoneNumber:
@@ -89,15 +89,60 @@ components:
           type: string
           format: email
         postalAddress:
-          $ref: PostalAddressResponse
+          $ref: RestPostalAddressResponse
 
-    Gender:
+    RestGender:
       type: string
       enum:
         - male
         - female
 
-    PostalAddressResponse:
+    RestPostalAddressResponse:
+      type: object
+      description: Address
+      required:
+        - address1
+        - city
+        - state
+        - country
+      properties:
+        address1:
+          type: string
+        address2:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+
+    RestSavePersonRequest:
+      type: object
+      description: Request to add/update a person
+      required:
+        - firstName
+        - lastName
+        - phoneNumber
+        - email
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        gender:
+          $ref: RestGender
+        age:
+          type: integer
+        phoneNumber:
+          type: string
+        email:
+          type: string
+          format: email
+        postalAddress:
+          $ref: RestSavePostalAddressRequest
+
+    RestSavePostalAddressRequest:
       type: object
       description: Address
       required:

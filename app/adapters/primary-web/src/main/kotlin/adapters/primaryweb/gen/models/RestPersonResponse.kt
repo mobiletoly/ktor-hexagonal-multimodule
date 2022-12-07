@@ -15,8 +15,8 @@
 
 package adapters.primaryweb.gen.models
 
-import adapters.primaryweb.gen.models.Gender
-import adapters.primaryweb.gen.models.PostalAddressResponse
+import adapters.primaryweb.gen.models.RestGender
+import adapters.primaryweb.gen.models.RestPostalAddressResponse
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
@@ -36,7 +36,7 @@ import kotlinx.serialization.Contextual
  */
 @Serializable
 
-data class PersonResponse (
+data class RestPersonResponse (
 
     @SerialName(value = "id")
     val id: kotlin.Long,
@@ -54,13 +54,13 @@ data class PersonResponse (
     val email: kotlin.String,
 
     @Contextual @SerialName(value = "gender")
-    val gender: Gender? = null,
+    val gender: RestGender? = null,
 
     @SerialName(value = "age")
     val age: kotlin.Int? = null,
 
     @SerialName(value = "postalAddress")
-    val postalAddress: PostalAddressResponse? = null
+    val postalAddress: RestPostalAddressResponse? = null
 
 )
 

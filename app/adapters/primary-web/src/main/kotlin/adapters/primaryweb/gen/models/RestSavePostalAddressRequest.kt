@@ -31,7 +31,7 @@ import kotlinx.serialization.Contextual
  */
 @Serializable
 
-data class PostalAddressResponse (
+data class RestSavePostalAddressRequest (
 
     @SerialName(value = "address1")
     val address1: kotlin.String,

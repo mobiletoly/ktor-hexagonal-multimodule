@@ -1,6 +1,6 @@
 package adapters.primaryweb.routes
 
-import adapters.primaryweb.gen.models.HealthResponse
+import adapters.primaryweb.gen.models.RestHealthResponse
 import core.outport.GetDeploymentConfigPort
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
@@ -15,7 +15,7 @@ internal fun Routing.healthRoute() {
     get("/health") {
         call.respond(
             status = HttpStatusCode.OK,
-            message = HealthResponse(
+            message = RestHealthResponse(
                 status = "success",
                 version = "env=${deployment.env} version=${deployment.version} build=${deployment.buildNumber}",
                 remoteService = "success",

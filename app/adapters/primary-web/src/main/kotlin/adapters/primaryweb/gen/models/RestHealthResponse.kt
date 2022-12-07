@@ -30,7 +30,7 @@ import kotlinx.serialization.Contextual
  */
 @Serializable
 
-data class HealthResponse (
+data class RestHealthResponse (
 
     /* overall system health */
     @SerialName(value = "status")
