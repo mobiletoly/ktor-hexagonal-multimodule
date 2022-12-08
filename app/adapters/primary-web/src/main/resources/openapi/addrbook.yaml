@@ -6,6 +6,7 @@ info:
 paths:
   /health:
     get:
+      operationId: getHealth
       summary: Basic health check
       parameters:
         - in: query
@@ -23,6 +24,148 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RestHealthResponse'
+        '4XX':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: ''#/components/schemas/RestErrorResponse'
+        '5XX':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: ''#/components/schemas/RestErrorResponse'
+
+  /persons:
+    get:
+      operationId: getAllPersons
+      summary: Get all persons available in database
+      responses:
+        '200':
+          description: List of all persons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RestPersonResponse'
+        '4XX':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: ''#/components/schemas/RestErrorResponse'
+        '5XX':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: ''#/components/schemas/RestErrorResponse'
+
+    post:
+      operationId: addPerson
+      summary: Add new person
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestSavePersonRequest'
+      responses:
+        '200':
+          description: Newly created person payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestPersonResponse'
+        '4XX':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: ''#/components/schemas/RestErrorResponse'
+        '5XX':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: ''#/components/schemas/RestErrorResponse'
+  /persons/{id}:
+    get:
+      operationId: getPerson
+      summary: Get person by id
+      responses:
+        '200':
+          description: Person
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RestPersonResponse'
+        '404':
+          description: No person was found by specified id
+          content:
+            application/json:
+              schema:
+                $ref: ''#/components/schemas/RestErrorResponse'
+        '4XX':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: ''#/components/schemas/RestErrorResponse'
+        '5XX':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: ''#/components/schemas/RestErrorResponse'
+    put:
+      operationId: updatePerson
+      summary: Update existing person by id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestSavePersonRequest'
+      responses:
+        '200':
+          description: Newly created person payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestPersonResponse'
+        '404':
+          description: No person was found by specified id
+          content:
+            application/json:
+              schema:
+                $ref: ''#/components/schemas/RestErrorResponse'
+        '4XX':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: ''#/components/schemas/RestErrorResponse'
+        '5XX':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: ''#/components/schemas/RestErrorResponse'
+    delete:
+      operationId: deletePerson
+      summary: Delete person by id
+      responses:
+        '204':
+          description: Operation was successful
+        '404':
+          description: No person was found by specified id
+          content:
+            application/json:
+              schema:
+                $ref: ''#/components/schemas/RestErrorResponse'
         '4XX':
           description: Client error
           content:
