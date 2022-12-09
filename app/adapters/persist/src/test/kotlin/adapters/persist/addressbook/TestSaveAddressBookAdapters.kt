@@ -2,7 +2,6 @@ package adapters.persist.addressbook
 
 import adapters.persist.DatabaseConnector
 import core.errors.ResourceAlreadyExistsException
-import core.models.PersonEntry
 import core.models.PersonEntryNotFoundException
 import core.outport.AddPersonPort
 import core.outport.UpdatePersonPort
@@ -25,13 +24,13 @@ class TestSaveAddressBookAdapters : AddressBookPersistSpec() {
             shutdownPort.shutdownStorage()
         }
 
-        describe("add single person") {
+        describe("add person") {
             it("success when person added to empty table") {
                 val personToAdd = createDefaultPerson(phoneNumber = "+1-503-333-4444")
                 val addedPerson = txPort.withNewTransaction {
                     addPersonPort.addPerson(personToAdd)
                 }
-                validateSavedPerson(savedPerson = addedPerson, personToSave = personToAdd, expectedId = 1)
+                assertPerson(actual = addedPerson, expected = personToAdd, expectedId = 1)
             }
             it("success when person added to non-empty table") {
                 val initialPersonToAdd = createDefaultPerson(phoneNumber = "+1-503-333-4444")
@@ -43,7 +42,7 @@ class TestSaveAddressBookAdapters : AddressBookPersistSpec() {
                 val addedPerson = txPort.withNewTransaction {
                     addPersonPort.addPerson(personToAdd)
                 }
-                validateSavedPerson(savedPerson = addedPerson, personToSave = personToAdd, expectedId = 2)
+                assertPerson(actual = addedPerson, expected = personToAdd, expectedId = 2)
             }
             it("fail when person with the same phone already exist") {
                 val personToAdd = createDefaultPerson(phoneNumber = "+1-503-333-4444")
@@ -97,7 +96,7 @@ class TestSaveAddressBookAdapters : AddressBookPersistSpec() {
             }
         }
 
-        describe("update single person") {
+        describe("update person") {
             it("success when update existing person") {
                 val addedPerson = txPort.withNewTransaction {
                     val personToAdd = createDefaultPerson(phoneNumber = "+1-503-333-4444")
@@ -110,7 +109,7 @@ class TestSaveAddressBookAdapters : AddressBookPersistSpec() {
                 val updatedPerson = txPort.withNewTransaction {
                     updatePersonPort.updatePerson(personToUpdate)
                 }
-                validateSavedPerson(savedPerson = updatedPerson, personToSave = personToUpdate, expectedId = personToUpdate.id)
+                assertPerson(actual = updatedPerson, expected = personToUpdate, expectedId = personToUpdate.id)
             }
             it("fail when update person with non-existing id") {
                 val addedPerson = txPort.withNewTransaction {
@@ -183,45 +182,6 @@ class TestSaveAddressBookAdapters : AddressBookPersistSpec() {
                 }
                 e.detail shouldContain "\"person_email_unique\""
             }
-        }
-    }
-}
-
-private fun createDefaultPerson(phoneNumber: String): PersonEntry {
-    return PersonEntry(
-        id = null,
-        firstName = "FirstName",
-        lastName = "LastName",
-        gender = PersonEntry.Gender.MALE,
-        age = 30,
-        phoneNumber = phoneNumber,
-        email = "email1@example.com",
-        postalAddress = PersonEntry.PostalAddress(
-            address1 = "Some Street 1",
-            address2 = "Apt 1",
-            city = "Portland",
-            state = "OR",
-            country = "USA",
-        )
-    )
-}
-
-private fun validateSavedPerson(savedPerson: PersonEntry, personToSave: PersonEntry, expectedId: Long?) {
-    savedPerson.id shouldBe expectedId
-    savedPerson.firstName shouldBe personToSave.firstName
-    savedPerson.lastName shouldBe personToSave.lastName
-    savedPerson.gender shouldBe personToSave.gender
-    savedPerson.age shouldBe personToSave.age
-    savedPerson.phoneNumber shouldBe personToSave.phoneNumber
-    savedPerson.email shouldBe personToSave.email
-    val addrToAdd = personToSave.postalAddress
-    if (addrToAdd != null) {
-        with(savedPerson.postalAddress!!) {
-            this.address1 shouldBe addrToAdd.address1
-            this.address2 shouldBe addrToAdd.address2
-            this.city shouldBe addrToAdd.city
-            this.state shouldBe addrToAdd.state
-            this.country shouldBe addrToAdd.country
         }
     }
 }

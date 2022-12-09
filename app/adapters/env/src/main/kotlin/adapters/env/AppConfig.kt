@@ -1,12 +1,12 @@
 package adapters.env
 
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 import core.outport.DeploymentConfig
 import core.outport.GetDatabaseConfigPort
 import core.outport.GetDeploymentConfigPort
 import core.outport.GetRandomPersonServiceConfigPort
 import core.outport.RandomPersonServiceConfig
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 import java.util.Properties
 
 internal class AppConfig(deploymentEnv: String) :

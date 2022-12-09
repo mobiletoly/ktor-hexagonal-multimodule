@@ -4,7 +4,6 @@ import core.outport.GetDeploymentConfigPort
 import core.usecase.HealthStatus
 import core.usecase.HealthStatusUsecase
 
-
 class HealthStatusService internal constructor(
     getDeploymentPort: GetDeploymentConfigPort,
 ) : HealthStatusUsecase {

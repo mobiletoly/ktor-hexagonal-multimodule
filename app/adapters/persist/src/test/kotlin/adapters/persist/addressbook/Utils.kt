@@ -1,12 +1,14 @@
 package adapters.persist.addressbook
 
 import adapters.persist.persistenceModule
+import core.models.PersonEntry
 import core.outport.BootPersistStoragePort
 import core.outport.GetDatabaseConfigPort
 import core.outport.PersistTransactionPort
 import core.outport.ShutdownPersistStoragePort
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.koin.KoinExtension
+import io.kotest.matchers.shouldBe
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.inject
@@ -57,5 +59,44 @@ abstract class AddressBookPersistSpec(body: AddressBookPersistSpec.() -> Unit = 
     init {
         postgresqlContainer.start()
         body()
+    }
+}
+
+fun createDefaultPerson(phoneNumber: String): PersonEntry {
+    return PersonEntry(
+        id = null,
+        firstName = "FirstName",
+        lastName = "LastName",
+        gender = PersonEntry.Gender.MALE,
+        age = 30,
+        phoneNumber = phoneNumber,
+        email = "email1@example.com",
+        postalAddress = PersonEntry.PostalAddress(
+            address1 = "Some Street 1",
+            address2 = "Apt 1",
+            city = "Portland",
+            state = "OR",
+            country = "USA",
+        )
+    )
+}
+
+fun assertPerson(actual: PersonEntry, expected: PersonEntry, expectedId: Long?) {
+    actual.id shouldBe expectedId
+    actual.firstName shouldBe expected.firstName
+    actual.lastName shouldBe expected.lastName
+    actual.gender shouldBe expected.gender
+    actual.age shouldBe expected.age
+    actual.phoneNumber shouldBe expected.phoneNumber
+    actual.email shouldBe expected.email
+    val addrToAdd = expected.postalAddress
+    if (addrToAdd != null) {
+        with(actual.postalAddress!!) {
+            this.address1 shouldBe addrToAdd.address1
+            this.address2 shouldBe addrToAdd.address2
+            this.city shouldBe addrToAdd.city
+            this.state shouldBe addrToAdd.state
+            this.country shouldBe addrToAdd.country
+        }
     }
 }

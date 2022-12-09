@@ -14,9 +14,11 @@ fun newHttpClient(): HttpClient {
     return HttpClient(CIO) {
         expectSuccess = true
         install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-            })
+            json(
+                Json {
+                    ignoreUnknownKeys = true
+                }
+            )
         }
         install(Logging) {
             logger = Logger.DEFAULT

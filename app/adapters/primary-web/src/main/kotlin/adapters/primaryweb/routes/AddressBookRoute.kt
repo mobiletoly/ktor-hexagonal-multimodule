@@ -73,7 +73,7 @@ private fun Route.addPerson() {
 private fun Route.updatePerson() {
     val updatePersonUsecase by inject<UpdatePersonUsecase>()
 
-    put ("{id}") {
+    put("{id}") {
         val id = call.longParameter("id")
         val restPersonReq = call.receiveValidated<RestSavePersonRequest>()
         val personToSave = restPersonReq.toPersonEntry(id = id)
@@ -86,9 +86,9 @@ private fun Route.updatePerson() {
 private fun Route.deletePerson() {
     val deletePersonUsecase by inject<DeletePersonUsecase>()
 
-    delete ("{id}") {
+    delete("{id}") {
         val id = call.longParameter("id")
-        val person = deletePersonUsecase.deletePerson(id = id)
+        deletePersonUsecase.deletePerson(id = id)
         call.respond(status = HttpStatusCode.NoContent, message = "")
     }
 }

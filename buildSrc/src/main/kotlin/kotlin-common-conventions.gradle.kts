@@ -8,6 +8,8 @@ val kotestKoinVersion: String by rootProject
 
 plugins {
     id("org.jetbrains.kotlin.jvm")
+    id("org.jlleitschuh.gradle.ktlint")
+    id("org.jlleitschuh.gradle.ktlint-idea")
 }
 
 repositories {
@@ -32,12 +34,16 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
     testImplementation("io.kotest:kotest-property:$kotestVersion")
     testImplementation("io.kotest.extensions:kotest-extensions-koin:$kotestKoinVersion")
-//    testImplementation("io.kotest:kotest-property:$kotestVersion")
-
-    // Use JUnit Jupiter for testing.
-//    testImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
 }
 
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
+configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+    // I don't like when linter complains that ${i} must be replaced to $i in string templates.
+    // I personally think that template "email${i}@example.com" is easier to read than "email$i@example.com"
+    this.disabledRules.add("string-template")
+
+    verbose.set(true)
+    outputToConsole.set(true)
+    filter {
+        exclude("**/gen/**")
+    }
 }

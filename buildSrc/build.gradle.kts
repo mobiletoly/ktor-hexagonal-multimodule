@@ -10,4 +10,5 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10")
+    implementation("org.jlleitschuh.gradle:ktlint-gradle:11.0.0")
 }
