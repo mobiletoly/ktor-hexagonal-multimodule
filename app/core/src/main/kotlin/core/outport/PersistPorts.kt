@@ -10,7 +10,6 @@ interface ShutdownPersistStoragePort {
 
 interface PersistTransactionPort {
     /** Request new transaction */
-    @RequiresTransactionContext
     suspend fun <T> withNewTransaction(block: suspend () -> T): T
 
     /** Request to run inside already started transaction */

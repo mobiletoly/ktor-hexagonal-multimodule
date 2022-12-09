@@ -1,0 +1,61 @@
+package adapters.persist.addressbook
+
+import adapters.persist.persistenceModule
+import core.outport.BootPersistStoragePort
+import core.outport.GetDatabaseConfigPort
+import core.outport.PersistTransactionPort
+import core.outport.ShutdownPersistStoragePort
+import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.koin.KoinExtension
+import org.koin.dsl.module
+import org.koin.test.KoinTest
+import org.koin.test.inject
+import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.containers.wait.strategy.Wait
+import java.util.Properties
+
+fun createPostgreSqlContainer() = PostgreSQLContainer<Nothing>("postgres:14.6-alpine").apply {
+    startupAttempts = 1
+    exposedPorts = listOf(5432)
+    waitingFor(Wait.forListeningPort())
+}
+
+fun PostgreSQLContainer<Nothing>.createDatabaseConfigPort(): GetDatabaseConfigPort {
+    return object : GetDatabaseConfigPort {
+        override val database: Properties
+            get() = Properties().also {
+                it.setProperty("dataSource.url", jdbcUrl)
+                it.setProperty("dataSourceClassName", "org.postgresql.ds.PGSimpleDataSource")
+                it.setProperty("dataSource.user", username)
+                it.setProperty("dataSource.password", password)
+                it.setProperty("autoCommit", "false")
+            }
+    }
+}
+
+abstract class AddressBookPersistSpec(body: AddressBookPersistSpec.() -> Unit = {}) : DescribeSpec(), KoinTest {
+
+    private val postgresqlContainer = createPostgreSqlContainer()
+
+    private val mockModules by lazy {
+        module {
+            single {
+                postgresqlContainer.createDatabaseConfigPort()
+            }
+        }
+    }
+
+    override fun extensions(): List<KoinExtension> {
+        return listOf(KoinExtension(modules = listOf(mockModules, persistenceModule)))
+    }
+
+    protected val bootPort by inject<BootPersistStoragePort>()
+    protected val shutdownPort by inject<ShutdownPersistStoragePort>()
+
+    protected val txPort by inject<PersistTransactionPort>()
+
+    init {
+        postgresqlContainer.start()
+        body()
+    }
+}

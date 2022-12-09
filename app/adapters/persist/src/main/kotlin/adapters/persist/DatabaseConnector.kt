@@ -38,14 +38,13 @@ internal class DatabaseConnector(
         // add your tables here
     )
 
-//    @RequiresTransactionContext
-//    suspend fun deleteAllTables() {
-//        existingTransaction {
-//            SchemaUtils.drop(*tables)
-//        }
-//    }
+    @OptIn(RequiresTransactionContext::class)
+    suspend fun deleteAllTables() {
+        withNewTransaction {
+            SchemaUtils.drop(*tables)
+        }
+    }
 
-    @RequiresTransactionContext
     override suspend fun <T> withNewTransaction(block: suspend () -> T): T {
         return try {
             newSuspendedTransaction(Dispatchers.IO, db = db) {
