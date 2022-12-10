@@ -17,7 +17,7 @@ RUN mkdir -p /home/apiserver && chown -R apiserver:apiserver /home/apiserver
 # Set user to apiserver:apiserver
 USER apiserver:apiserver
 # Copy apiserver JAR as apiserver user and group
-COPY --chown=apiserver:apiserver ./app/build/libs/addrbook-hexagonal-ktor.jar /home/apiserver/apiserver.jar
+COPY --chown=apiserver:apiserver ./app/infra/build/libs/infra-all.jar /home/apiserver/apiserver.jar
 # Set work directory to apiserver
 WORKDIR /home/apiserver
 

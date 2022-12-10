@@ -10,6 +10,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm")
     id("org.jlleitschuh.gradle.ktlint")
     id("org.jlleitschuh.gradle.ktlint-idea")
+    id("org.jetbrains.kotlinx.kover")
 }
 
 repositories {
@@ -36,6 +37,10 @@ dependencies {
     testImplementation("io.kotest.extensions:kotest-extensions-koin:$kotestKoinVersion")
 }
 
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
+}
+
 configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
     // I don't like when linter complains that ${i} must be replaced to $i in string templates.
     // I personally think that template "email${i}@example.com" is easier to read than "email$i@example.com"
@@ -46,4 +51,9 @@ configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
     filter {
         exclude("**/gen/**")
     }
+}
+
+koverMerged {
+    // true to disable instrumentation and all Kover tasks in this project
+    enable()
 }
