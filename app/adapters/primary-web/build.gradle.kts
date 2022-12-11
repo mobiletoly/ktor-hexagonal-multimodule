@@ -5,7 +5,7 @@ val swaggerAnnotationsVersion: String by rootProject
 
 plugins {
     id("kotlin-library-conventions")
-    kotlin("plugin.serialization") version "1.7.20"
+    kotlin("plugin.serialization")
     id("org.openapi.generator")
 }
 
@@ -26,6 +26,13 @@ dependencies {
     implementation("io.swagger.core.v3:swagger-annotations:$swaggerAnnotationsVersion")
 }
 
-openApiValidate {
+openApiGenerate {
     inputSpec.set("$projectDir/src/main/resources/openapi/addrbook.yaml")
+    outputDir.set("$projectDir")
+    generatorName.set("kotlin")
+    globalProperties.put("models", "")
+    generateApiDocumentation.set(false)
+    generateModelDocumentation.set(false)
+    additionalProperties.put("serializationLibrary", "kotlinx_serialization")
+    packageName.set("adapters.primaryweb.gen")
 }

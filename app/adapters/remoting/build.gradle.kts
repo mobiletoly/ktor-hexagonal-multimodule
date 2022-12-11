@@ -3,7 +3,7 @@ val ktorVersion: String by rootProject
 
 plugins {
     id("kotlin-library-conventions")
-    kotlin("plugin.serialization") version "1.7.20"
+    kotlin("plugin.serialization")
 }
 
 dependencies {

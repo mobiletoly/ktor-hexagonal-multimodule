@@ -322,6 +322,17 @@ This second part after dash `-` must match what you pass via `APP_DEPLOYMENT_ENV
 variable.
 
 
+## REST data models
+
+We use a hybrid approach to build REST endpoint in our ktor code. All the ktor routes are created manually in
+the code, while data models (payloads) for PUT/POST requests as well as all data model responses - declared
+in OpenAPI spec. You can find them in `app/adapters/primary-web/src/main/resources/openapi/addrbook.yaml` file.
+By using openapi generator plugin we generate kotlin data classes based on this file. If you decide to
+add/change REST models, you can edit this file and run code generator after that:
+
+        $ ./gradlew openApiGenerate
+
+
 ## Testing
 
 ### Unit tests
