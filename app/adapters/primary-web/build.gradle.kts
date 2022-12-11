@@ -6,6 +6,7 @@ val swaggerAnnotationsVersion: String by rootProject
 plugins {
     id("kotlin-library-conventions")
     kotlin("plugin.serialization") version "1.7.20"
+    id("org.openapi.generator")
 }
 
 dependencies {
@@ -23,4 +24,8 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     implementation("io.insert-koin:koin-ktor:$koinVersion")
     implementation("io.swagger.core.v3:swagger-annotations:$swaggerAnnotationsVersion")
+}
+
+openApiValidate {
+    inputSpec.set("$projectDir/src/main/resources/openapi/addrbook.yaml")
 }

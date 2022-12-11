@@ -30,8 +30,7 @@ and some other misc stuff:
 
 Simple Address Book web service written according to Hexagonal architectural patterns to add/delete/fetch
 address book items. It demonstrates database access as well as using external REST service to assist in generating
-random address book items. You can find Postman collection to access this web service in `integration/postman`
-directory.
+random address book items.
 
 ## Hexagonal architecture overview
 
@@ -311,6 +310,7 @@ Make sure to replace *your-local-ip-address* in APP_DB_URI in command above to t
 that you can find with **ifconfig** or **ipconfig** shell commands (you cannot use *localhost* anymore, because localhost
 inside AddressBook application docker container will be pointing to that container instead of your host machine).
 
+
 ## HOCON configuration
 
 Application configurations are stored in popular and powerful HOCON format (https://github.com/lightbend/config).
@@ -321,12 +321,21 @@ that configuration will be loading for specific environments (you can add your o
 This second part after dash `-` must match what you pass via `APP_DEPLOYMENT_ENV` environment
 variable.
 
-## Unit tests
+
+## Testing
+
+### Unit tests
 
 Unit tests automatically run when you perform a build. All tests are light-weight and use mocks, with the noticeable
 exception of `app/adapters/persist` module. Here we use Test Containers to spin up docker image with PostgreSQL,
 so tests for adapters are run with a real PostgreSQL database, no database mocks are used. This will allow us to
 be more confident in our code that interacts with database.
+
+### Manual tests
+
+There is an OpenAPI specification in `app/adapters/primary-web/src/main/resources/openapi/addrbook.yaml` file,
+you can import it into Postman if you want to manually call app's REST APIs.
+
 
 ## Generate coverage report
 
