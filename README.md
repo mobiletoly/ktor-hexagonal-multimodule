@@ -10,7 +10,7 @@ it as a foundation for much larger services.
 
 - **gradle** - our build system of choice (using Kotlin DSL)
 - **kotlin** - our language of choice
-- **ktor** for creating web application: https://github.com/ktorio/ktor
+- **ktor 2** for creating web application: https://github.com/ktorio/ktor
 - **ExposedSQL** to access database: https://github.com/JetBrains/Exposed
 - **HikariCP** for high-performance JDBC connection pool: https://github.com/brettwooldridge/HikariCP
 - **Koin** for dependency injection: https://insert-koin.io/
@@ -185,7 +185,17 @@ Core service will return it back to REST controller where this entry will be con
 REST response `adapters.primaryweb.gen.models.RestPersonResponse`.
 
 
-# Setup
+### Koin modules
+
+We use Koin framework for dependency injection. The way how we organize our code for dependency
+injection is that we have a separate Koin modules for each gradle module in our project.
+For instance, you can find a file `adapters/persist/_PersistenceModule.kt` that
+contains `val persistenceModule = module { ... }` to declare dependencies for Persist adapter
+module. We have similar approach for other modules as well. Last step is to wire all dependencies
+together, and we do it from `infra` module (specifically in `App.kt` file). Now your dependencies
+will be available through the entire application.
+
+# Setup for run
 
 ## Prerequisites
 
@@ -295,7 +305,7 @@ $ docker run -it \
     --rm addrbook-api-server
 ```
 
-Make sure to replace *your-local-ip-address* in APP_DB_URI in command above to an actual IP address of your machine
+Make sure to replace *your-local-ip-address* in APP_DB_URI in command above to the actual IP address of your machine
 that you can find with **ifconfig** or **ipconfig** shell commands (you cannot use *localhost* anymore, because localhost
 inside AddressBook application docker container will be pointing to that container instead of your host machine).
 
