@@ -9,7 +9,10 @@ import core.outport.GetRandomPersonServiceConfigPort
 import core.outport.RandomPersonServiceConfig
 import java.util.Properties
 
-internal class AppConfig(deploymentEnv: String) :
+/**
+ * Application configuration reader from HOCON config file.
+ */
+internal class HoconBasedAppConfig(deploymentEnv: String) :
     GetDeploymentConfigPort,
     GetDatabaseConfigPort,
     GetRandomPersonServiceConfigPort {

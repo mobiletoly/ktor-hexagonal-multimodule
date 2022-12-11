@@ -29,13 +29,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ''#/components/schemas/RestErrorResponse'
+                $ref: '#/components/schemas/RestErrorResponse'
         '5XX':
           description: Server error
           content:
             application/json:
               schema:
-                $ref: ''#/components/schemas/RestErrorResponse'
+                $ref: '#/components/schemas/RestErrorResponse'
 
   /persons:
     get:
@@ -55,13 +55,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ''#/components/schemas/RestErrorResponse'
+                $ref: '#/components/schemas/RestErrorResponse'
         '5XX':
           description: Server error
           content:
             application/json:
               schema:
-                $ref: ''#/components/schemas/RestErrorResponse'
+                $ref: '#/components/schemas/RestErrorResponse'
 
     post:
       operationId: addPerson
@@ -83,16 +83,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ''#/components/schemas/RestErrorResponse'
+                $ref: '#/components/schemas/RestErrorResponse'
         '5XX':
           description: Server error
           content:
             application/json:
               schema:
-                $ref: ''#/components/schemas/RestErrorResponse'
+                $ref: '#/components/schemas/RestErrorResponse'
+
   /persons/{id}:
+    parameters:
+      - in: path
+        name: id
+        description: Person id
+        required: true
+        schema:
+          type: integer
+          format: int64
     get:
-      operationId: getPerson
+      operationId: getPersonById
       summary: Get person by id
       responses:
         '200':
@@ -100,29 +109,27 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/RestPersonResponse'
+                $ref: '#/components/schemas/RestPersonResponse'
         '404':
           description: No person was found by specified id
           content:
             application/json:
               schema:
-                $ref: ''#/components/schemas/RestErrorResponse'
+                $ref: '#/components/schemas/RestErrorResponse'
         '4XX':
           description: Client error
           content:
             application/json:
               schema:
-                $ref: ''#/components/schemas/RestErrorResponse'
+                $ref: '#/components/schemas/RestErrorResponse'
         '5XX':
           description: Server error
           content:
             application/json:
               schema:
-                $ref: ''#/components/schemas/RestErrorResponse'
+                $ref: '#/components/schemas/RestErrorResponse'
     put:
-      operationId: updatePerson
+      operationId: updatePersonById
       summary: Update existing person by id
       requestBody:
         content:
@@ -141,21 +148,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ''#/components/schemas/RestErrorResponse'
+                $ref: '#/components/schemas/RestErrorResponse'
         '4XX':
           description: Client error
           content:
             application/json:
               schema:
-                $ref: ''#/components/schemas/RestErrorResponse'
+                $ref: '#/components/schemas/RestErrorResponse'
         '5XX':
           description: Server error
           content:
             application/json:
               schema:
-                $ref: ''#/components/schemas/RestErrorResponse'
+                $ref: '#/components/schemas/RestErrorResponse'
     delete:
-      operationId: deletePerson
+      operationId: deletePersonById
       summary: Delete person by id
       responses:
         '204':
@@ -165,19 +172,43 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ''#/components/schemas/RestErrorResponse'
+                $ref: '#/components/schemas/RestErrorResponse'
         '4XX':
           description: Client error
           content:
             application/json:
               schema:
-                $ref: ''#/components/schemas/RestErrorResponse'
+                $ref: '#/components/schemas/RestErrorResponse'
         '5XX':
           description: Server error
           content:
             application/json:
               schema:
-                $ref: ''#/components/schemas/RestErrorResponse'
+                $ref: '#/components/schemas/RestErrorResponse'
+
+  /persons/random:
+    post:
+      operationId: addRandomPerson
+      summary: Add new random person
+      responses:
+        '200':
+          description: Newly created person payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestPersonResponse'
+        '4XX':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestErrorResponse'
+        '5XX':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestErrorResponse'
 
 components:
   schemas:
@@ -223,7 +254,7 @@ components:
         lastName:
           type: string
         gender:
-          $ref: RestGender
+          $ref: '#/components/schemas/RestGender'
         age:
           type: integer
         phoneNumber:
@@ -232,7 +263,7 @@ components:
           type: string
           format: email
         postalAddress:
-          $ref: RestPostalAddressResponse
+          $ref: '#/components/schemas/RestPostalAddressResponse'
 
     RestGender:
       type: string
@@ -274,16 +305,17 @@ components:
         lastName:
           type: string
         gender:
-          $ref: RestGender
+          $ref: '#/components/schemas/RestGender'
         age:
           type: integer
+          nullable: true
         phoneNumber:
           type: string
         email:
           type: string
           format: email
         postalAddress:
-          $ref: RestSavePostalAddressRequest
+          $ref: '#/components/schemas/RestSavePostalAddressRequest'
 
     RestSavePostalAddressRequest:
       type: object
@@ -298,6 +330,7 @@ components:
           type: string
         address2:
           type: string
+          nullable: true
         city:
           type: string
         state:
@@ -338,7 +371,7 @@ components:
         specifics:
           type: array
           items:
-            $ref: 'RestErrorSpecificsResponse'
+            $ref: '#/components/schemas/RestErrorSpecificsResponse'
 
     RestErrorSpecificsResponse:
       required:

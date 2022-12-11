@@ -14,7 +14,7 @@ import core.outport.RequiresTransactionContext
  */
 internal class LoadPersonAdapter(
     private val personRepo: PersonRepo,
-    private val postalAddressRepo: PostalAddressRepo
+    private val postalAddressRepo: PostalAddressRepo,
 ) : LoadPersonPort,
     LoadAllPersonsPort {
 
@@ -26,7 +26,7 @@ internal class LoadPersonAdapter(
         val personSqlEntity = personRepo.getByIdOrNull(id = id)
             ?: throw PersonEntryNotFoundException(searchCriteria = "id=$id")
         val postalAddressSqlEntity = postalAddressRepo.getByPersonIdOrNull(id)
-        return PersonEntry.mapFrom(
+        return PersonEntry.fromEntity(
             personSqlEntity = personSqlEntity,
             postalAddressSqlEntity = postalAddressSqlEntity
         )
@@ -36,15 +36,13 @@ internal class LoadPersonAdapter(
     override fun loadAllPersons(): Collection<PersonEntry> {
         logger.debug { "loadAllPersons(): Load all person entries" }
         val personSqlEntities = personRepo.getAll()
-        val postalAddressSqlEntitiesMap = postalAddressRepo.getAll()
-            .map {
-                it.personId to it
-            }
-            .toMap()
+        val postalAddressSqlEntitiesMap = postalAddressRepo.getAll().associateBy {
+            it.personId
+        }
         return personSqlEntities
             .map { personSqlEntity ->
                 val postalAddressSqlEntity = postalAddressSqlEntitiesMap[personSqlEntity.id!!]
-                PersonEntry.mapFrom(
+                PersonEntry.fromEntity(
                     personSqlEntity = personSqlEntity,
                     postalAddressSqlEntity = postalAddressSqlEntity
                 )

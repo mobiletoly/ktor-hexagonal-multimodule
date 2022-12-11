@@ -15,7 +15,7 @@ import core.outport.UpdatePersonPort
  */
 internal class SavePersonAdapter(
     private val personRepository: PersonRepo,
-    private val postalAddressRepo: PostalAddressRepo
+    private val postalAddressRepo: PostalAddressRepo,
 ) : AddPersonPort,
     UpdatePersonPort,
     DeletePersonPort {
@@ -48,7 +48,7 @@ internal class SavePersonAdapter(
     @RequiresTransactionContext
     private fun upsertPersonEntry(
         personEntry: PersonEntry,
-        postalAddressId: Long?
+        postalAddressId: Long?,
     ): PersonEntry {
         val addressBookItemSqlEntity = personRepository.upsert(
             personEntry.toPersonSqlEntity()
@@ -61,7 +61,7 @@ internal class SavePersonAdapter(
             ?.let {
                 postalAddressRepo.upsert(it)
             }
-        return PersonEntry.mapFrom(
+        return PersonEntry.fromEntity(
             personSqlEntity = addressBookItemSqlEntity,
             postalAddressSqlEntity = postalAddressSqlEntity
         )

@@ -6,9 +6,9 @@ internal class AppOsEnvironment :
     GetDeploymentEnvPort {
 
     override val deploymentEnv: String by lazy {
-        System.getenv(APP_DEPLOYMENT_ENV_KEY)
-            ?: throw IllegalStateException("<$APP_DEPLOYMENT_ENV_KEY> environment variable is missing")
+        System.getenv(appDeploymentEnvKey)
+            ?: throw IllegalStateException("<$appDeploymentEnvKey> environment variable is missing")
     }
 
-    private val APP_DEPLOYMENT_ENV_KEY = "APP_DEPLOYMENT_ENV"
+    private val appDeploymentEnvKey = "APP_DEPLOYMENT_ENV"
 }

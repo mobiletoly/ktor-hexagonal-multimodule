@@ -66,7 +66,7 @@ internal class LoadAllPersonsService(
     }
 }
 
-class RandomPersonService(
+internal class RandomPersonService(
     private val generateRandomPersonPort: GenerateRandomPersonPort,
     private val addPersonPort: AddPersonPort,
     private val txPort: PersistTransactionPort,

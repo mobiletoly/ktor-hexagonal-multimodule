@@ -11,7 +11,7 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
  */
 internal fun <T : Table> T.pgInsertOrUpdate(
     vararg keyColumns: Column<*>,
-    body: T.(InsertStatement<Number>) -> Unit
+    body: T.(InsertStatement<Number>) -> Unit,
 ) = PgInsertOrUpdate<Number>(keyColumns = keyColumns, table = this).apply {
     body(this)
     execute(TransactionManager.current())
@@ -20,7 +20,7 @@ internal fun <T : Table> T.pgInsertOrUpdate(
 internal class PgInsertOrUpdate<Key : Any> constructor(
     private val keyColumns: Array<out Column<*>>,
     table: Table,
-    isIgnore: Boolean = false
+    isIgnore: Boolean = false,
 ) : InsertStatement<Key>(table = table, isIgnore = isIgnore) {
 
     override fun prepareSQL(transaction: Transaction): String {

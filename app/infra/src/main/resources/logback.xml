@@ -12,6 +12,6 @@
     <logger name="io.grpc.netty" level="INFO"/>
     <logger name="io.netty" level="INFO"/>
     <logger name="com.zaxxer.hikari.pool.HikariPool" level="WARN"/>
-    <logger name="io.ktor.client.HttpClient" level="WARN"/>
+    <logger name="io.ktor.client.HttpClient" level="DEBUG"/>
 
 </configuration>

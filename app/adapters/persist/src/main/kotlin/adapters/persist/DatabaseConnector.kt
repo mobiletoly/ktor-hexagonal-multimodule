@@ -24,7 +24,7 @@ private val logger = InlineLogger()
 
 internal class DatabaseConnector(
     private val databaseConfig: Properties,
-    private val errorInspector: DatabaseErrorInspector
+    private val errorInspector: DatabaseErrorInspector,
 ) : BootPersistStoragePort,
     ShutdownPersistStoragePort,
     PersistTransactionPort {

@@ -5,7 +5,7 @@ import adapters.persist.addressbook.repo.PersonSqlEntity
 import adapters.persist.addressbook.repo.PostalAddressSqlEntity
 import core.models.PersonEntry
 
-internal fun PersonEntry.Companion.mapFrom(
+internal fun PersonEntry.Companion.fromEntity(
     personSqlEntity: PersonSqlEntity,
     postalAddressSqlEntity: PostalAddressSqlEntity?
 ) = with(personSqlEntity) {
@@ -48,7 +48,7 @@ internal fun PersonEntry.toPersonSqlEntity() = with(this) {
 
 internal fun PersonEntry.PostalAddress.toPostalAddressSqlEntity(
     personId: Long,
-    postalAddressId: Long?
+    postalAddressId: Long?,
 ): PostalAddressSqlEntity = with(this) {
     PostalAddressSqlEntity(
         id = postalAddressId,

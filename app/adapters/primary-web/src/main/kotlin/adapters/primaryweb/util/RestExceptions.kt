@@ -9,7 +9,7 @@ internal open class RestGenericException(
     private val title: String,
     val status: HttpStatusCode,
     private val detail: String,
-    private val specifics: Map<String, Any?>? = null
+    private val specifics: Map<String, Any?>? = null,
 ) : RuntimeException() {
     fun toRestErrorResponse(path: String) = RestErrorResponse(
         type = type,
@@ -39,7 +39,7 @@ internal class RestBadInputException(message: String) : RestGenericException(
 }
 
 internal data class RestMissingRequestParameterException(
-    val paramName: String
+    val paramName: String,
 ) : RestGenericException(
     type = ERROR_TYPE,
     title = "Missing request parameter",
@@ -56,7 +56,7 @@ internal data class RestMissingRequestParameterException(
 
 internal data class RestInvalidRequestParameterFormatException(
     val paramName: String,
-    val detail: String
+    val detail: String,
 ) : RestGenericException(
     type = ERROR_TYPE,
     title = "Invalid request parameter format",
@@ -68,38 +68,6 @@ internal data class RestInvalidRequestParameterFormatException(
 ) {
     companion object {
         const val ERROR_TYPE = "/errors/invalid-request-parameter-format"
-    }
-}
-
-internal data class RestDuplicateKeyValueException(
-    val sqlError: String?
-) : RestGenericException(
-    type = ERROR_TYPE,
-    title = "Duplicate key/value in entity",
-    status = HttpStatusCode.BadRequest,
-    detail = "Cannot store data because some fields are duplicated and conflicting with previously stored entries",
-    specifics = mapOf(
-        "sqlError" to sqlError
-    )
-) {
-    companion object {
-        const val ERROR_TYPE = "/errors/duplicate-key-value"
-    }
-}
-
-internal data class RestSqlException(
-    val sqlError: String?
-) : RestGenericException(
-    type = ERROR_TYPE,
-    title = "Error performing SQL request",
-    status = HttpStatusCode.InternalServerError,
-    detail = "Something went wrong while executing database SQL request",
-    specifics = mapOf(
-        "sqlError" to sqlError
-    )
-) {
-    companion object {
-        const val ERROR_TYPE = "/errors/sql-error"
     }
 }
 
