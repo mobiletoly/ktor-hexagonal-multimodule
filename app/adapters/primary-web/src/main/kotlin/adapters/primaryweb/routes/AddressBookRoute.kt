@@ -10,6 +10,7 @@ import core.usecase.AddPersonUsecase
 import core.usecase.DeletePersonUsecase
 import core.usecase.LoadAllPersonsUsecase
 import core.usecase.LoadPersonUsecase
+import core.usecase.PopulateRandomPersonUsecase
 import core.usecase.UpdatePersonUsecase
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
@@ -32,6 +33,7 @@ internal fun Routing.personRoute() {
         addPerson()
         updatePerson()
         deletePerson()
+        addRandomPerson()
     }
 }
 
@@ -90,5 +92,15 @@ private fun Route.deletePerson() {
         val id = call.longParameter("id")
         deletePersonUsecase.deletePerson(id = id)
         call.respond(status = HttpStatusCode.NoContent, message = "")
+    }
+}
+
+private fun Route.addRandomPerson() {
+    val randomPersonUsecase by inject<PopulateRandomPersonUsecase>()
+
+    post("random") {
+        val person = randomPersonUsecase.populateRandomPerson()
+        val restPersonResp = person.toResponse()
+        call.respond(status = HttpStatusCode.OK, message = restPersonResp)
     }
 }

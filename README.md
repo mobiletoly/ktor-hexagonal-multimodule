@@ -151,7 +151,9 @@ No module dependencies
 ### Workflow example
 
 ```
-    [1 REST controller] --> [2 Use Case]:[Service] --> [3 Output Port][Adapter] --> [4 Repository]
+    [1 REST controller]--> [2 Use Case]:[Service]---> [3 Output Port][Adapter]--> [4 Repository]
+                                                |
+                                                + --> [5 Output Port][Adapter]--> [6 Repository]
 ```
 
 1. User performs HTTP POST request to `/persons` to add new person. This request is handled by
@@ -308,6 +310,16 @@ $ docker run -it \
 Make sure to replace *your-local-ip-address* in APP_DB_URI in command above to the actual IP address of your machine
 that you can find with **ifconfig** or **ipconfig** shell commands (you cannot use *localhost* anymore, because localhost
 inside AddressBook application docker container will be pointing to that container instead of your host machine).
+
+## HOCON configuration
+
+Application configurations are stored in popular and powerful HOCON format (https://github.com/lightbend/config).
+Our config files location is at `app/infra/src/main/resource` and here you can find files such
+as `config-common.conf`, `config-local.conf` and `config-prod.conf`. Common file is used to keep
+all configurations that can be shared between all deployments, while `-local` and `-prod` means
+that configuration will be loading for specific environments (you can add your own if needed).
+This second part after dash `-` must match what you pass via `APP_DEPLOYMENT_ENV` environment
+variable.
 
 ## Unit tests
 

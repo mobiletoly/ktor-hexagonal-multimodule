@@ -15,26 +15,26 @@ internal val serviceModule = module {
     }
 
     single<AddPersonUsecase> {
-        AddPersonService(txPort = get(), addPersonPort = get())
+        AddPersonService(addPersonPort = get(), txPort = get())
     }
     single<LoadPersonUsecase> {
-        LoadPersonService(txPort = get(), loadPersonPort = get())
+        LoadPersonService(loadPersonPort = get(), txPort = get())
     }
     single<DeletePersonUsecase> {
-        DeletePersonService(txPort = get(), deletePersonPort = get())
+        DeletePersonService(deletePersonPort = get(), txPort = get())
     }
     single<UpdatePersonUsecase> {
-        UpdatePersonService(txPort = get(), updatePersonPort = get())
+        UpdatePersonService(updatePersonPort = get(), txPort = get())
     }
     single<LoadAllPersonsUsecase> {
-        LoadAllPersonsService(txPort = get(), loadAllPersonsPort = get())
+        LoadAllPersonsService(loadAllPersonsPort = get(), txPort = get())
     }
 
     single<PopulateRandomPersonUsecase> {
         RandomPersonService(
             generateRandomPersonPort = get(),
-            txPort = get(),
             addPersonPort = get(),
+            txPort = get(),
         )
     }
 }
