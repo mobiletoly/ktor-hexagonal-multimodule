@@ -10,9 +10,10 @@ import io.ktor.server.routing.get
 import org.koin.ktor.ext.inject
 
 internal fun Routing.healthRoute() {
-    val deployment = inject<GetDeploymentConfigPort>().value.deployment
+    val deploymentPort by inject<GetDeploymentConfigPort>()
 
     get("/health") {
+        val deployment = deploymentPort.deployment
         call.respond(
             status = HttpStatusCode.OK,
             message = RestHealthResponse(

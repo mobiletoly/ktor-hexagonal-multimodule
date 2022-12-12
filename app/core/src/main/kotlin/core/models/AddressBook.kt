@@ -35,4 +35,7 @@ class PersonEntryNotFoundException(
 ) : ResourceNotFoundException(
     title = "Requested person not found",
     detail = "Person entry not found for search criteria: $searchCriteria",
+    specifics = mapOf(
+        "searchCriteria" to searchCriteria
+    )
 )

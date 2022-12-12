@@ -2,22 +2,22 @@ package core.usecase
 
 import core.models.PersonEntry
 
-interface AddPersonUsecase {
+fun interface AddPersonUsecase {
     suspend fun addPerson(entry: PersonEntry): PersonEntry
 }
 
-interface LoadPersonUsecase {
+fun interface LoadPersonUsecase {
     suspend fun loadPerson(id: Long): PersonEntry
 }
 
-interface DeletePersonUsecase {
+fun interface DeletePersonUsecase {
     suspend fun deletePerson(id: Long)
 }
 
-interface UpdatePersonUsecase {
+fun interface UpdatePersonUsecase {
     suspend fun updatePerson(entry: PersonEntry): PersonEntry
 }
 
-interface LoadAllPersonsUsecase {
+fun interface LoadAllPersonsUsecase {
     suspend fun loadAllPersons(): Collection<PersonEntry>
 }

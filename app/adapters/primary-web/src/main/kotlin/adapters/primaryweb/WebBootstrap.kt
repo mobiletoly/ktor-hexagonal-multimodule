@@ -3,6 +3,7 @@ package adapters.primaryweb
 import adapters.primaryweb.routes.healthRoute
 import adapters.primaryweb.routes.personRoute
 import adapters.primaryweb.util.RestGenericException
+import adapters.primaryweb.util.RestInternalServerError
 import adapters.primaryweb.util.respondRestException
 import com.github.michaelbull.logging.InlineLogger
 import common.log.setXRequestId
@@ -75,7 +76,7 @@ fun Application.webBootstrap() {
     // Return proper HTTP error: https://ktor.io/features/status-pages.html
     // In this block we are mapping Domain and Adapter exceptions into proper HTTP error response.
     install(StatusPages) {
-        exception<Throwable> { call, e ->
+        exception<Exception> { call, e ->
             setXRequestId(call.callId)
             logger.error(e) { "StatusPages/exception(): Error to be returned to a caller" }
             when (e) {
@@ -90,9 +91,8 @@ fun Application.webBootstrap() {
                     call.respondRestException(e)
                 }
                 else -> {
-                    call.respond(
-                        status = HttpStatusCode.InternalServerError,
-                        message = e.message ?: e.toString()
+                    call.respondRestException(
+                        RestInternalServerError(detail = e.message ?: e.toString())
                     )
                 }
             }

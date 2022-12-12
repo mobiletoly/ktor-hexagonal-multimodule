@@ -2,6 +2,7 @@ val ktorVersion: String by rootProject
 val koinVersion: String by rootProject
 val jacksonVersion: String by rootProject
 val swaggerAnnotationsVersion: String by rootProject
+val kotestKtorVersion: String by rootProject
 
 plugins {
     id("kotlin-library-conventions")
@@ -24,6 +25,10 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     implementation("io.insert-koin:koin-ktor:$koinVersion")
     implementation("io.swagger.core.v3:swagger-annotations:$swaggerAnnotationsVersion")
+
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
+    testImplementation("io.kotest.extensions:kotest-assertions-ktor:$kotestKtorVersion")
+    testImplementation("io.ktor:ktor-server-netty:$ktorVersion")
 }
 
 openApiGenerate {

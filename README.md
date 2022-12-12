@@ -147,12 +147,14 @@ modules.
 No module dependencies
 
 
-### Workflow example
+### Workflow examples
+
+#### Add new person workflow
+
+On of the workflows we have is ability to add new person into a persistent storage:
 
 ```
-    [1 REST controller]--> [2 Use Case]:[Service]---> [3 Output Port][Adapter]--> [4 Repository]
-                                                |
-                                                + --> [5 Output Port][Adapter]--> [6 Repository]
+    [1 REST controller]--> [2 Use Case]:[Service]---> [3 Output Port][Adapter]--> [4 Persist repository]
 ```
 
 1. User performs HTTP POST request to `/persons` to add new person. This request is handled by
@@ -184,6 +186,38 @@ Once this operation is performed, repository will return new SQL entities (with 
 where they will be converted by adapter back into `PersonEntry` and returned to core's service.
 Core service will return it back to REST controller where this entry will be converted to
 REST response `adapters.primaryweb.gen.models.RestPersonResponse`.
+
+
+#### Generate new random person workflow
+
+Another example of workflow is an ability to generate a new random person and store it in a database.
+Our logic will generate a random person information using remote service located at https://randomuser.me/api
+and store it in persistent storage.
+
+```
+    [1 REST controller]--> [2 Use Case]:[Service]---> [3 Output Port][Adapter]--> [4 Persist repository]
+                                                |
+                                                + --> [5 Output Port][Adapter]--> [6 Remoting repository]
+```
+
+1. User performs HTTP POST request to `/persons/random` to generate random person contact.
+Port `PopulateRandomPersonUsecase` will be used.<br><br>
+
+2. Core module's code in `core.services.RandomPersonService` class implements `PopulateRandomPersonUsecase`
+and it uses to output ports to perform it work: `GenerateRandomPersonPort` to obtain a new random person
+from a remote service and `AddPersonPort` (similar to our first example) to persist this random person
+into a database.<br><br>
+
+3. `adapters.persist.addressbook.SavePersonAdapter` class in module `persist` implements `AddPersonPort` and performs
+entity transformations and calls to persist repository to store data.<br><br>
+
+4. Repository class uses ExposedSQL to store SQL entities into database.<br><br>
+
+5. `adapters.remoting.randomperson.RandomPersonAdapter` class in module `remoting` implements
+`GenerateRandomPersonPort` port and performs call to remoting repository.<br><br>
+
+6. In our case remoting repository is represented by `RandomPersonHttpClient` class that perform HTTP call (via
+ktor client library) to randomuser.me service.
 
 
 ### Koin modules
@@ -341,6 +375,9 @@ Unit tests automatically run when you perform a build. All tests are light-weigh
 exception of `app/adapters/persist` module. Here we use Test Containers to spin up docker image with PostgreSQL,
 so tests for adapters are run with a real PostgreSQL database, no database mocks are used. This will allow us to
 be more confident in our code that interacts with database.
+
+Not that if you want to run unit tests per file or class level in IntelliJ, you must install Kotest plugin
+from marketplace.
 
 ### Manual tests
 

@@ -76,11 +76,25 @@ internal class RestExternalServiceCallException(
 ) : RestGenericException(
     type = ERROR_TYPE,
     title = "Error performing external service call",
-    status = HttpStatusCode.BadGateway,
+    status = HttpStatusCode.ServiceUnavailable,
     detail = "External service call response needs to be inspected for error details",
     specifics = specifics
 ) {
     companion object {
         const val ERROR_TYPE = "/errors/external-service-call"
+    }
+}
+
+internal class RestInternalServerError(
+    detail: String,
+) : RestGenericException(
+    type = ERROR_TYPE,
+    title = "Internal server error occurred",
+    status = HttpStatusCode.InternalServerError,
+    detail = detail,
+    specifics = null,
+) {
+    companion object {
+        const val ERROR_TYPE = "/errors/internal-server-error"
     }
 }
