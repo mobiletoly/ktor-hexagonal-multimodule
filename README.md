@@ -22,8 +22,8 @@ and for testing:
 - **kotest** for writing tests: https://kotest.io
 
 and some other misc stuff:
-- **ktlint** for Kotlin checkstyle
-- **kover** for code coverage metrics
+- **ktlint** for Kotlin checkstyle (https://pinterest.github.io/ktlint/)
+- **kover** for code coverage metrics (https://github.com/Kotlin/kotlinx-kover)
 
 
 ## Goal
@@ -155,7 +155,7 @@ No module dependencies
 One of the workflows we have is ability to add new person into a persistent storage:
 
 ```
-    [1 REST controller]--> [2 Use Case]:[Service]---> [3 Output Port][Adapter]--> [4 Persist repository]
+[1 REST controller]--> [2 Use Case]:[Service]---> [3 Output Port][Adapter]--> [4 Persist repository]
 ```
 
 1. User performs HTTP POST request to `/persons` to add new person. This request is handled by
@@ -196,7 +196,7 @@ Our logic will generate a random person information using remote service located
 and store it in persistent storage.
 
 ```
-    [1 REST controller]--> [2 Use Case]:[Service]---> [3 Output Port][Adapter]--> [4 Persist repository]
+[1 REST controller]--> [2 Use Case]:[Service]---> [3 Output Port][Adapter]--> [4 Persist repository]
                                                 |
                                                 + --> [5 Output Port][Adapter]--> [6 Remoting repository]
 ```
@@ -359,7 +359,7 @@ variable.
 
 ## REST data models
 
-We use a hybrid approach to build REST endpoint in our ktor code. All the ktor routes are created manually in
+We use a hybrid approach to build REST endpoints in our ktor code. All ktor routes are created manually in
 the code, while data models (payloads) for PUT/POST requests as well as all data model responses - declared
 in OpenAPI spec. You can find them in `app/adapters/primary-web/src/main/resources/openapi/addrbook.yaml` file.
 By using openapi generator plugin we generate kotlin data classes based on this file. If you decide to
@@ -392,7 +392,8 @@ To generate a coverage report in HTML format you must run:
 
     $ ./gradlew build koverMergedHtmlReport
 
-It will run unit tests and generate coverage report in HTML format into project's directory: `./app/adapters/persist/build/reports/kover/merged/html/index.html`
+It will run unit tests and generate coverage report in HTML format into project's directory:
+`./app/adapters/persist/build/reports/kover/merged/html/index.html`
 
 There are other tasks (such as koverMergedXmlReport, etc. available).
 
