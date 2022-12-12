@@ -29,8 +29,8 @@ and some other misc stuff:
 ## Goal
 
 Simple Address Book web service written according to Hexagonal architectural patterns to add/delete/fetch
-address book items. It demonstrates database access as well as using external REST service to assist in generating
-random address book items.
+address book items. It demonstrates database access as well as usage of external REST service to assist in
+generating random address book items.
 
 ## Hexagonal architecture overview
 
@@ -38,27 +38,28 @@ Project uses Hexagonal (or "ports and adapters") architecture. There are a lot o
 hexagonal architecture, so please google it, it is really cool and understanding of it is needed to understand
 this project's layout.
 
-In this project we separate functionality into few modules - **adapters** (with submodules), **core**, **infra**,
+In this project we separate functionality into few modules - **adapters** (with submodules), **core**, and **infra**,
 with only few modules having dependencies on other modules.
 
 Here is a brief overview of each module:
 
-- **core** - contains business logic (services that implement business use cases, definition of ports for adapters,
-business models).
+- **core** - contains business logic (services that implement business use cases, business data models, and
+declares port interfaces for adapters).
 - **adapters** - provides platform/framework specific functionality (e.g. your database repository classes
 go here)
 - **infra** - application configuration and launcher
-- **common** - light-weight miscellaneous code that can be useful for other modules
+- **common** - light-weight miscellaneous code that can be useful for other modules (logger helpers is a good
+examples)
 
-Now let's take a look at each module in more details
+Now let's take a look at each module in more details.
 
-#### Core module
+### Core module
 
 This is a module containing a business logic of our application. The main idea is that business logic should
 know nothing about frameworks used to implement an application, it should have zero knowledge about database
-used, database ORM technology used, HTTP client used or what is Kafka. In our application Core module contains
-multiple services, such as `AddressBookService`, `RandomPersonService` etc implementing our core business logic:
-add, update and delete Address Book entries.
+used, ORM technology used, HTTP client used or what is Kafka, Flink or SQS. In our application Core module
+contains services, such as `AddressBookService`, implementing our core business logic: add, update and delete
+Address Book entries.
 
 ###### Depends on
 - It has no dependencies on other modules.
@@ -66,32 +67,33 @@ add, update and delete Address Book entries.
 ###### What should be in Core
 - Service code to provide business logic functionality.
 - Business data models
-- Definitions of output ports
-- Definitions of input ports (a.k.a. use cases).
+- Declaration of output ports
+- Declaration of input ports (a.k.a. use cases).
 
 ###### What should not be in Core
 - Frameworks (less are better)
-- Database, network clients (no SQL Exposed calls, no Kafka calls, no SQS call etc)
+- Database, network clients (no Exposed SQL calls, no HTTP calls, etc)
 - No transport logic (e.g. no JSON parsing, no JSON annotations etc). It might be tempting to use JSON objects
-received from web service controllers, but don't do this, use core models to describe your business logic.
-It will require extra work and some extra effort to write data structures that might look very similar,
+received from web service controllers, but don't do this, use core models to describe your business logic
+and provide mappings between JSON objects received from REST controllers and domain business models. It will
+require extra work and some extra effort to write data structures that might look very similar,
 but when you decide to change your JSON payload and your business logic will remain the same - it will pay off.
 
 ###### What is ports
 
-- Ports is a bridge between Adapters and Core modules. Core declare interfaces it requires from Adapters and put
+- Ports are the bridges between Adapters and Core modules. Core declare interfaces it requires from Adapters and put
 them in `outport` package. Then Adapters provides implementations (injected via Dependency Injection, we use
 Koin framework in our application) for these port interfaces. These ports are called **output ports** and 
 adapters implementing output ports are called **secondary adapters** (also known as **driven adapters**).
-- Secondary adapters should never call business logic directly, it can only return data (models, exceptions etc)
-in response for core logic calls.
+Secondary adapters should never call business logic directly, it can only return data (models, exceptions etc)
+in response for core business logic calls.
 
 There is a concept called **primary adapters** (also known as **driver adapters**). In our code we have only
-one primary adapter called `primary-web`. Unlike secondary adapters, that can only respond to core logic calls,
-primary adapters are the ones that initiate calls to core logic via **input ports**. In our code we call input
-ports - **use cases**. Core logic code is responsible to provide service classes that implement use case interfaces.
-In our code our primary adapter is ktor application that provides REST handlers. REST handler calls use case
-interface that is implemented in Core module and Core module might decide to call secondary adapter via output
+one primary adapter called `primary-web`. Unlike secondary adapters that can only respond to core logic calls,
+primary adapters are the ones that initiate calls to core logic via **input ports**. In our code we name input
+ports as **use cases**. Core logic code is responsible to provide service classes that implement use case interfaces.
+In our code our primary adapter is ktor application that provides REST handlers. REST handler invokes use case
+interface implemented in Core module and Core module might decide to call secondary adapter via output
 port to perform framework-specific operation, for example to add data into database.
 
 
@@ -99,30 +101,29 @@ port to perform framework-specific operation, for example to add data into datab
 
 Platform-specific code. Don't put any of your business logic here. These modules implement platform specific
 functionality, such as database access or HTTP calls. As we already mentioned, the special case of adapters is
-*primary adapters* that contain functionality that trigger business logic via interfaces in core's `usecase`
+**primary adapters** containing functionality that trigger business logic via interfaces in core's `usecase`
 interfaces, in our case this is ktor's web controllers (routes).
 
 Adapters usually deal with repository classes (SQL repo, HTTP client repo etc) and can work with DTO
-(data transfer objects) to communicate with repositories. These DTO objects should not be exposed to core's
-business logic, since if they change - it should not impact business logic. If adapter wants to return data
+(data transfer objects) to communicate with repositories. These DTO objects should not be exposed to core
+business logic, because if they change - it should not impact business logic. If adapter wants to return data
 back to core business logic, this DTO object should be converted to business model data class first. Same is
-for input, core module will be sending model data classes as input parameter to adapter (via output port)
-and adapter might need to convert these models to DTO object first.
+for flow from core layer to adapter - core module will be sending model data classes as input parameter to
+adapter (via output port) and adapter might need to convert these models to DTO objects first.
 
 ###### Depends on
 - **core** module. Primary adapters should only use `usecase` package and model data classes used by use cases
-(these model classes may reside outside of `usecase` classes, e.g. in our app we use `error` and `models` packages
-as well). Secondary adapters should only use `outport` package (and model data classes).
+(these model classes may reside outside of `usecase` package, e.g. in our app we use `error` and `models` packages
+as well). Secondary adapters should only use `outport` package (and model data classes, errors etc).
 
 ###### What should be in adapters
 - Web Service controllers (in our app it is **ktor** routes)
 - HTTP/REST clients
 - Database repositories to provide access to underlying database.
 - For example Kafka or ActiveMQ code to send or receive data.
-- DAO objects. Yes, DAO objects should not be in Ports or Core modules. First of all, they can contain
+- DAO/DTO objects. Yes, DAO objects should not be in Ports or Core modules. First of all, they can contain
   framework-specific code or annotations (e.g. JPA annotations). Second, you don't want to have your business
   entities to reflect database table layout.
-- DTO (Data Transfer Object) entities, usually specific to repository.
 
 ###### What should not be in adapters
 - Avoid any business logic code
@@ -139,7 +140,7 @@ All other modules.
 
 #### Common module
 
-**shared** module should not be used too often. It may contain some utility functionality, for example in our app we
+**common** module should not be used too often. It may contain some utility functionality, for example in our app we
 have some logger utility functions in the common module, because logging required in both **adapter** and **core**
 modules.
 
@@ -151,7 +152,7 @@ No module dependencies
 
 #### Add new person workflow
 
-On of the workflows we have is ability to add new person into a persistent storage:
+One of the workflows we have is ability to add new person into a persistent storage:
 
 ```
     [1 REST controller]--> [2 Use Case]:[Service]---> [3 Output Port][Adapter]--> [4 Persist repository]
@@ -394,3 +395,11 @@ To generate a coverage report in HTML format you must run:
 It will run unit tests and generate coverage report in HTML format into project's directory: `./app/adapters/persist/build/reports/kover/merged/html/index.html`
 
 There are other tasks (such as koverMergedXmlReport, etc. available).
+
+
+## Logging
+
+This application uses simple logging based on slf4j. Note that our code supports X-Request-Id HTTP header
+that you can specify when perform HTTP request (or it will be auto-generated). The value of this header
+will be attached to every log line (in form of `CallRequestId=...`) which will assist you in troubleshooting
+your log files (or in Splunk).
