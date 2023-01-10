@@ -16,6 +16,7 @@ it as a foundation for much larger services.
 - **Koin** for dependency injection: https://insert-koin.io/
 - **PostgreSQL** for database: https://www.postgresql.org/
 - **HOCON** for application configuration: https://github.com/lightbend/config/
+- **OpenAPI** to generate REST data models
 
 and for testing:
 - **Testcontainers** for testing with a real database in Docker: https://github.com/testcontainers/testcontainers-java
