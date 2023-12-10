@@ -23,9 +23,9 @@ internal class PgInsertOrUpdate<Key : Any> constructor(
     isIgnore: Boolean = false,
 ) : InsertStatement<Key>(table = table, isIgnore = isIgnore) {
 
-    override fun prepareSQL(transaction: Transaction): String {
+    override fun prepareSQL(transaction: Transaction, prepared: Boolean): String {
         val updateSetter = super.values.keys.joinToString { "${it.name} = EXCLUDED.${it.name}" }
         val onConflict = "ON CONFLICT (${keyColumns.joinToString { it.name } }) DO UPDATE SET $updateSetter"
-        return "${super.prepareSQL(transaction)} $onConflict"
+        return "${super.prepareSQL(transaction, prepared)} $onConflict"
     }
 }

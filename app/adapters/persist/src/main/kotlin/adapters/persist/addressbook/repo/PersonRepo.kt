@@ -2,7 +2,7 @@ package adapters.persist.addressbook.repo
 
 import adapters.persist.util.postgresql.pgInsertOrUpdate
 import com.github.michaelbull.logging.InlineLogger
-import core.outport.RequiresTransactionContext
+import core.outport.MustBeCalledInTransactionContext
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.select
@@ -12,7 +12,7 @@ internal class PersonRepo {
 
     private val logger = InlineLogger()
 
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     fun getByIdOrNull(id: Long): PersonSqlEntity? {
         return PersonSqlEntities
             .select {
@@ -25,7 +25,7 @@ internal class PersonRepo {
             .singleOrNull()
     }
 
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     fun upsert(entity: PersonSqlEntity): PersonSqlEntity {
         logger.debug { "upsert(): Update/insert $entity for id=${entity.id}" }
         return PersonSqlEntities
@@ -39,7 +39,7 @@ internal class PersonRepo {
             }
     }
 
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     fun getAll(): List<PersonSqlEntity> {
         return PersonSqlEntities
             .selectAll()
@@ -48,7 +48,7 @@ internal class PersonRepo {
             }
     }
 
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     fun deleteById(id: Long): Boolean {
         return PersonSqlEntities
             .deleteWhere {
@@ -56,14 +56,14 @@ internal class PersonRepo {
             } > 0
     }
 
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     fun count(): Long {
         return PersonSqlEntities
             .selectAll()
             .count()
     }
 
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     fun hasEntityWithId(id: Long): Boolean {
         return PersonSqlEntities
             .select {

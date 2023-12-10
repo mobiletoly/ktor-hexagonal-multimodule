@@ -13,11 +13,11 @@ interface PersistTransactionPort {
     suspend fun <T> withNewTransaction(block: suspend () -> T): T
 
     /** Request to run inside already started transaction */
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     suspend fun <T> withExistingTransaction(block: suspend () -> T): T
 
     /** Request to starts new transaction if it has not been started yet or run in existing transaction */
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     suspend fun <T> withTransaction(block: suspend () -> T): T
 }
 
@@ -34,4 +34,4 @@ interface PersistTransactionPort {
     AnnotationTarget.PROPERTY_SETTER,
     AnnotationTarget.TYPEALIAS
 )
-annotation class RequiresTransactionContext
+annotation class MustBeCalledInTransactionContext

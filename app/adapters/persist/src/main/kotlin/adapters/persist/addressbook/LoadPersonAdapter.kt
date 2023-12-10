@@ -7,7 +7,7 @@ import core.models.PersonEntry
 import core.models.PersonEntryNotFoundException
 import core.outport.LoadAllPersonsPort
 import core.outport.LoadPersonPort
-import core.outport.RequiresTransactionContext
+import core.outport.MustBeCalledInTransactionContext
 
 /**
  * Adapter to perform load operations over address book item and postal address repositories.
@@ -20,7 +20,7 @@ internal class LoadPersonAdapter(
 
     private val logger = InlineLogger()
 
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     override fun loadPerson(id: Long): PersonEntry {
         logger.debug { "loadPerson(): Load person entry: id=$id" }
         val personSqlEntity = personRepo.getByIdOrNull(id = id)
@@ -32,7 +32,7 @@ internal class LoadPersonAdapter(
         )
     }
 
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     override fun loadAllPersons(): Collection<PersonEntry> {
         logger.debug { "loadAllPersons(): Load all person entries" }
         val personSqlEntities = personRepo.getAll()

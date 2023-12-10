@@ -272,7 +272,7 @@ Make sure to create **addrbook** database in your PostgreSQL instance.
 Application uses HOCON configuration files and some parameters rely on environment variable,
 so you need to set them up first:
 
-APP_DEPLOYMENT_ENV=local;APP_DB_USERNAME=postgres;APP_DB_PASSWORD=postgrespass;APP_DB_URI=jdbc:postgresql://localhost:5432/addrbook;APP_VERSION=0.0;APP_BUILD_NUMBER=0
+APP_DEPLOYMENT_ENV=local;APP_DB_USERNAME=baeldung;APP_DB_PASSWORD=baeldung;APP_DB_URI=jdbc:postgresql://localhost:5432/addrbook;APP_VERSION=0.0;APP_BUILD_NUMBER=0
 
 - Deployment target. Application can have multiple configurations (local, dev, sit, prod etc) and therefore
   multiple resource files, such as `infra/src/main/resources/config-local.conf` (`config-prod.conf` etc) are available.
@@ -405,3 +405,12 @@ This application uses simple logging based on slf4j. Note that our code supports
 that you can specify when perform HTTP request (or it will be auto-generated). The value of this header
 will be attached to every log line (in form of `CallRequestId=...`) which will assist you in troubleshooting
 your log files (or in Splunk).
+
+## Helper functionality
+
+### MustBeCalledInTransactionContext annotation
+
+This annotation is used to mark functions that must be called in a transaction context. It is used
+in `app/adapters/persist` module to make sure that all database calls are performed in a transaction
+context. If you forget to wrap a function with this annotation in a transaction context - you will
+get a compile time error. 

@@ -8,7 +8,7 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import core.outport.BootPersistStoragePort
 import core.outport.PersistTransactionPort
-import core.outport.RequiresTransactionContext
+import core.outport.MustBeCalledInTransactionContext
 import core.outport.ShutdownPersistStoragePort
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.exceptions.ExposedSQLException
@@ -16,11 +16,9 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.transactions.experimental.suspendedTransaction
+import org.jetbrains.exposed.sql.transactions.experimental.withSuspendTransaction
 import org.jetbrains.exposed.sql.transactions.transactionManager
 import java.util.Properties
-
-private val logger = InlineLogger()
 
 internal class DatabaseConnector(
     private val databaseConfig: Properties,
@@ -28,6 +26,7 @@ internal class DatabaseConnector(
 ) : BootPersistStoragePort,
     ShutdownPersistStoragePort,
     PersistTransactionPort {
+
     private val logger = InlineLogger()
     private lateinit var ds: HikariDataSource
     private lateinit var db: Database
@@ -38,8 +37,8 @@ internal class DatabaseConnector(
         // add your tables here
     )
 
-    @OptIn(RequiresTransactionContext::class)
     suspend fun deleteAllTables() {
+        logger.debug { "Deleting all tables..." }
         withNewTransaction {
             SchemaUtils.drop(*tables)
         }
@@ -56,7 +55,7 @@ internal class DatabaseConnector(
         }
     }
 
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     override suspend fun <T> withExistingTransaction(block: suspend () -> T): T {
         val tx = db.transactionManager.currentOrNull()
         if (tx == null) {
@@ -65,7 +64,7 @@ internal class DatabaseConnector(
             throw IllegalStateException("withExistingTransaction(): current transaction is closed")
         }
         return try {
-            tx.suspendedTransaction(Dispatchers.IO) {
+            tx.withSuspendTransaction {
                 block()
             }
         } catch (e: ExposedSQLException) {
@@ -74,7 +73,7 @@ internal class DatabaseConnector(
         }
     }
 
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     override suspend fun <T> withTransaction(block: suspend () -> T): T {
         val tx = TransactionManager.currentOrNull()
         return try {
@@ -83,7 +82,7 @@ internal class DatabaseConnector(
                     block()
                 }
             } else {
-                tx.suspendedTransaction(Dispatchers.IO) {
+                tx.withSuspendTransaction {
                     block()
                 }
             }
@@ -98,7 +97,7 @@ internal class DatabaseConnector(
         ds = HikariDataSource(HikariConfig(databaseConfig))
         db = Database.connect(ds)
 
-        @OptIn(RequiresTransactionContext::class) withNewTransaction {
+        withNewTransaction {
             preInit.invoke()
             SchemaUtils.create(*tables)
         }

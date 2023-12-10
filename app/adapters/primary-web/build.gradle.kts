@@ -1,6 +1,5 @@
 val ktorVersion: String by rootProject
 val koinVersion: String by rootProject
-val jacksonVersion: String by rootProject
 val swaggerAnnotationsVersion: String by rootProject
 val kotestKtorVersion: String by rootProject
 

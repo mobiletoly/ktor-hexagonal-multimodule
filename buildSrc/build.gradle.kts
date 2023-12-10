@@ -10,10 +10,10 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.22")
-    implementation("org.jetbrains.kotlin:kotlin-serialization:1.7.22")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.21")
+    implementation("org.jetbrains.kotlin:kotlin-serialization:1.9.21")
     implementation("org.jlleitschuh.gradle:ktlint-gradle:11.0.0")
     implementation("org.jetbrains.kotlinx:kover:0.6.1")
-    implementation("gradle.plugin.com.github.johnrengelman:shadow:7.1.2")
-    implementation("org.openapitools:openapi-generator-gradle-plugin:6.2.1")
+    implementation("com.github.johnrengelman:shadow:8.1.1")
+    implementation("org.openapitools:openapi-generator-gradle-plugin:7.1.0")
 }

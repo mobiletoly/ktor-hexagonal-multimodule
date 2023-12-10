@@ -7,7 +7,7 @@ import core.models.PersonEntry
 import core.models.PersonEntryNotFoundException
 import core.outport.AddPersonPort
 import core.outport.DeletePersonPort
-import core.outport.RequiresTransactionContext
+import core.outport.MustBeCalledInTransactionContext
 import core.outport.UpdatePersonPort
 
 /**
@@ -22,14 +22,14 @@ internal class SavePersonAdapter(
 
     private val logger = InlineLogger()
 
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     override fun addPerson(entry: PersonEntry): PersonEntry {
         logger.debug { "addPersonEntry(): Add person entry: $entry" }
         require(entry.id == null) { "entry.id must be null" }
         return upsertPersonEntry(personEntry = entry, postalAddressId = null)
     }
 
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     override fun updatePerson(entry: PersonEntry): PersonEntry {
         logger.debug { "updatePersonEntry(): Update person entry: $entry" }
         val personId = requireNotNull(entry.id) { "entity.id must not be null" }
@@ -45,7 +45,7 @@ internal class SavePersonAdapter(
         )
     }
 
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     private fun upsertPersonEntry(
         personEntry: PersonEntry,
         postalAddressId: Long?,
@@ -67,7 +67,7 @@ internal class SavePersonAdapter(
         )
     }
 
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     override fun deletePerson(id: Long) {
         logger.debug { "deletePersonEntry(): Delete person entity by id=$id" }
         if (!personRepository.deleteById(id = id)) {

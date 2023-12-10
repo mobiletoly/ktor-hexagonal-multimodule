@@ -2,7 +2,7 @@ package adapters.persist.addressbook.repo
 
 import adapters.persist.util.postgresql.pgInsertOrUpdate
 import com.github.michaelbull.logging.InlineLogger
-import core.outport.RequiresTransactionContext
+import core.outport.MustBeCalledInTransactionContext
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 
@@ -10,7 +10,7 @@ internal class PostalAddressRepo {
 
     private val logger = InlineLogger()
 
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     fun getById(id: Long): PostalAddressSqlEntity {
         return PostalAddressSqlEntities
             .select {
@@ -23,7 +23,7 @@ internal class PostalAddressRepo {
             .single()
     }
 
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     fun getByPersonIdOrNull(id: Long): PostalAddressSqlEntity? {
         return PostalAddressSqlEntities
             .select {
@@ -36,7 +36,7 @@ internal class PostalAddressRepo {
             .singleOrNull()
     }
 
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     fun upsert(entity: PostalAddressSqlEntity): PostalAddressSqlEntity {
         logger.debug { "upsert(): Update/insert $entity" }
         return PostalAddressSqlEntities
@@ -50,7 +50,7 @@ internal class PostalAddressRepo {
             }
     }
 
-    @RequiresTransactionContext
+    @MustBeCalledInTransactionContext
     fun getAll(): List<PostalAddressSqlEntity> {
         return PostalAddressSqlEntities
             .selectAll()
