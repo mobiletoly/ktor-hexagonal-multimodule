@@ -7,7 +7,7 @@ import core.models.PersonEntry
 
 internal fun PersonEntry.Companion.fromEntity(
     personSqlEntity: PersonSqlEntity,
-    postalAddressSqlEntity: PostalAddressSqlEntity?
+    postalAddressSqlEntity: PostalAddressSqlEntity?,
 ) = with(personSqlEntity) {
     PersonEntry(
         id = id,
@@ -17,7 +17,7 @@ internal fun PersonEntry.Companion.fromEntity(
         age = age,
         phoneNumber = phoneNumber,
         email = email,
-        postalAddress = postalAddressSqlEntity?.toEntity()
+        postalAddress = postalAddressSqlEntity?.toEntity(),
     )
 }
 
@@ -26,7 +26,7 @@ private fun PostalAddressSqlEntity.toEntity() = PersonEntry.PostalAddress(
     address2 = address2,
     city = city,
     state = state,
-    country = country
+    country = country,
 )
 
 private fun GenderSqlType.toEntity(): PersonEntry.Gender = when (this) {
@@ -42,7 +42,7 @@ internal fun PersonEntry.toPersonSqlEntity() = with(this) {
         gender = gender?.toSqlEntity(),
         age = age,
         phoneNumber = phoneNumber,
-        email = email
+        email = email,
     )
 }
 
@@ -57,7 +57,7 @@ internal fun PersonEntry.PostalAddress.toPostalAddressSqlEntity(
         address2 = address2,
         city = city,
         state = state,
-        country = country
+        country = country,
     )
 }
 

@@ -20,9 +20,9 @@ internal fun PersonEntry.toResponse(): RestPersonResponse = with(this) {
                 address2 = it.address2,
                 city = it.city,
                 state = it.state,
-                country = it.country
+                country = it.country,
             )
-        }
+        },
     )
 }
 

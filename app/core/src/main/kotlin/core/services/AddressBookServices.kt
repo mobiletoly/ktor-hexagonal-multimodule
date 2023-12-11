@@ -21,9 +21,10 @@ internal class AddPersonService(
     private val txPort: PersistTransactionPort,
 ) : AddPersonUsecase {
 
-    override suspend fun addPerson(entry: PersonEntry) = txPort.withNewTransaction {
-        addPersonPort.addPerson(entry)
-    }
+    override suspend fun addPerson(entry: PersonEntry): PersonEntry =
+        txPort.withNewTransaction {
+            addPersonPort.addPerson(entry)
+        }
 }
 
 internal class LoadPersonService(
@@ -31,9 +32,10 @@ internal class LoadPersonService(
     private val txPort: PersistTransactionPort,
 ) : LoadPersonUsecase {
 
-    override suspend fun loadPerson(id: Long) = txPort.withNewTransaction {
-        loadPersonPort.loadPerson(id)
-    }
+    override suspend fun loadPerson(id: Long): PersonEntry =
+        txPort.withNewTransaction {
+            loadPersonPort.loadPerson(id)
+        }
 }
 
 internal class DeletePersonService(
@@ -41,9 +43,10 @@ internal class DeletePersonService(
     private val txPort: PersistTransactionPort,
 ) : DeletePersonUsecase {
 
-    override suspend fun deletePerson(id: Long) = txPort.withNewTransaction {
-        deletePersonPort.deletePerson(id)
-    }
+    override suspend fun deletePerson(id: Long) =
+        txPort.withNewTransaction {
+            deletePersonPort.deletePerson(id)
+        }
 }
 
 internal class UpdatePersonService(
@@ -51,9 +54,10 @@ internal class UpdatePersonService(
     private val txPort: PersistTransactionPort,
 ) : UpdatePersonUsecase {
 
-    override suspend fun updatePerson(entry: PersonEntry) = txPort.withNewTransaction {
-        updatePersonPort.updatePerson(entry)
-    }
+    override suspend fun updatePerson(entry: PersonEntry): PersonEntry =
+        txPort.withNewTransaction {
+            updatePersonPort.updatePerson(entry)
+        }
 }
 
 internal class LoadAllPersonsService(
@@ -61,9 +65,10 @@ internal class LoadAllPersonsService(
     private val txPort: PersistTransactionPort,
 ) : LoadAllPersonsUsecase {
 
-    override suspend fun loadAllPersons() = txPort.withNewTransaction {
-        loadAllPersonsPort.loadAllPersons()
-    }
+    override suspend fun loadAllPersons(): Collection<PersonEntry> =
+        txPort.withNewTransaction {
+            loadAllPersonsPort.loadAllPersons()
+        }
 }
 
 internal class RandomPersonService(

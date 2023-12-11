@@ -41,7 +41,7 @@ internal class SavePersonAdapter(
             ?.id
         return upsertPersonEntry(
             personEntry = entry,
-            postalAddressId = postalAddressId
+            postalAddressId = postalAddressId,
         )
     }
 
@@ -50,20 +50,18 @@ internal class SavePersonAdapter(
         personEntry: PersonEntry,
         postalAddressId: Long?,
     ): PersonEntry {
-        val addressBookItemSqlEntity = personRepository.upsert(
-            personEntry.toPersonSqlEntity()
-        )
+        val addressBookItemSqlEntity = personRepository.upsert(personEntry.toPersonSqlEntity())
         val postalAddressSqlEntity = personEntry.postalAddress
             ?.toPostalAddressSqlEntity(
                 personId = addressBookItemSqlEntity.id!!,
-                postalAddressId = postalAddressId
+                postalAddressId = postalAddressId,
             )
             ?.let {
                 postalAddressRepo.upsert(it)
             }
         return PersonEntry.fromEntity(
             personSqlEntity = addressBookItemSqlEntity,
-            postalAddressSqlEntity = postalAddressSqlEntity
+            postalAddressSqlEntity = postalAddressSqlEntity,
         )
     }
 

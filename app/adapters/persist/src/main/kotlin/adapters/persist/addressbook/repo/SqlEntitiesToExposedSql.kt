@@ -23,7 +23,7 @@ internal fun PersonSqlEntity.Companion.fromSqlResultRow(resultRow: ResultRow) =
         gender = resultRow[PersonSqlEntities.gender],
         age = resultRow[PersonSqlEntities.age],
         phoneNumber = resultRow[PersonSqlEntities.phoneNumber],
-        email = resultRow[PersonSqlEntities.email]
+        email = resultRow[PersonSqlEntities.email],
     )
 
 internal fun PostalAddressSqlEntity.toSqlStatement(statement: InsertStatement<Number>) = statement.let {
@@ -46,5 +46,5 @@ internal fun PostalAddressSqlEntity.Companion.fromSqlResultRow(resultRow: Result
         address2 = resultRow[PostalAddressSqlEntities.address2],
         city = resultRow[PostalAddressSqlEntities.city],
         state = resultRow[PostalAddressSqlEntities.state],
-        country = resultRow[PostalAddressSqlEntities.country]
+        country = resultRow[PostalAddressSqlEntities.country],
     )

@@ -18,9 +18,9 @@ internal fun RestSavePersonRequest.toPersonEntry(id: Long?) = PersonEntry(
             address2 = it.address2,
             city = it.city,
             state = it.state,
-            country = it.country
+            country = it.country,
         )
-    }
+    },
 )
 
 private fun RestGender.toGender(): PersonEntry.Gender = when (this) {

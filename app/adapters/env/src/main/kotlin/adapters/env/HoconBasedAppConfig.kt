@@ -16,17 +16,17 @@ internal class HoconBasedAppConfig(deploymentEnv: String) :
     GetDeploymentConfigPort,
     GetDatabaseConfigPort,
     GetRandomPersonServiceConfigPort {
-
     private val config: Config
 
     init {
         val envConfig = ConfigFactory.load("config-$deploymentEnv.conf")
         val commonConf = ConfigFactory.load("config-common.conf")
-        val rootConfig = ConfigFactory
-            .load()
-            .withFallback(envConfig)
-            .withFallback(commonConf)
-            .resolve()
+        val rootConfig =
+            ConfigFactory
+                .load()
+                .withFallback(envConfig)
+                .withFallback(commonConf)
+                .resolve()
         this.config = rootConfig.getConfig("app-config")
     }
 
@@ -48,13 +48,14 @@ internal class HoconBasedAppConfig(deploymentEnv: String) :
         val node = config.getConfig("random-person-service")
         RandomPersonServiceConfig(
             fetchUrl = node.getString("fetch-url"),
-            apiKey = node.getString("api-key")
+            apiKey = node.getString("api-key"),
         )
     }
 
-    private fun Config.toProperties() = Properties().also {
-        for (e in this.entrySet()) {
-            it.setProperty(e.key, this.getString(e.key))
+    private fun Config.toProperties() =
+        Properties().also {
+            for (e in this.entrySet()) {
+                it.setProperty(e.key, this.getString(e.key))
+            }
         }
-    }
 }

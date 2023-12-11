@@ -12,8 +12,8 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.21")
     implementation("org.jetbrains.kotlin:kotlin-serialization:1.9.21")
-    implementation("org.jlleitschuh.gradle:ktlint-gradle:11.0.0")
-    implementation("org.jetbrains.kotlinx:kover:0.6.1")
+    implementation("org.jlleitschuh.gradle:ktlint-gradle:12.0.2")
+    implementation("org.jetbrains.kotlinx:kover-gradle-plugin:0.7.5")
     implementation("com.github.johnrengelman:shadow:8.1.1")
     implementation("org.openapitools:openapi-generator-gradle-plugin:7.1.0")
 }

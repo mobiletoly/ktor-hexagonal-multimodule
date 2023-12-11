@@ -41,7 +41,7 @@ internal fun ApplicationCall.longParameter(name: String): Long {
 private fun raiseInvalidRequestParameterFormatException(name: String, e: Exception): Nothing {
     throw RestInvalidRequestParameterFormatException(
         paramName = name,
-        detail = e.message ?: e.toString()
+        detail = e.message ?: e.toString(),
     )
 }
 

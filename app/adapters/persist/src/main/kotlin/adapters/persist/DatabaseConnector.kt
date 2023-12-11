@@ -7,9 +7,10 @@ import com.github.michaelbull.logging.InlineLogger
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import core.outport.BootPersistStoragePort
-import core.outport.PersistTransactionPort
 import core.outport.MustBeCalledInTransactionContext
+import core.outport.PersistTransactionPort
 import core.outport.ShutdownPersistStoragePort
+import java.util.Properties
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.Database
@@ -18,7 +19,6 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.experimental.withSuspendTransaction
 import org.jetbrains.exposed.sql.transactions.transactionManager
-import java.util.Properties
 
 internal class DatabaseConnector(
     private val databaseConfig: Properties,

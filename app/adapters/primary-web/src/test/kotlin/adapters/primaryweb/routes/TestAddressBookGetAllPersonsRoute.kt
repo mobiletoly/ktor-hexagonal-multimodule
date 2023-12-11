@@ -35,13 +35,16 @@ class TestAddressBookGetAllPersonsRoute : DescribeSpec() {
                     val entities = Json.decodeFromString<List<RestPersonResponse>>(response.bodyAsText())
                     entities shouldHaveSize 5
                     entities.forEachIndexed { ind, personResp ->
-                        personResp.testPersonWithPostalAddress(id = ind.toLong() + 1, expected = persons[ind].toResponse())
+                        personResp.testPersonWithPostalAddress(
+                            id = ind.toLong() + 1,
+                            expected = persons[ind].toResponse(),
+                        )
                     }
                 }
             }
 
             it("success with empty array when no persons available") {
-                testApplication() {
+                testApplication {
                     application {
                         defaultModules {
                             single {
@@ -57,7 +60,7 @@ class TestAddressBookGetAllPersonsRoute : DescribeSpec() {
             }
 
             it("fail with HTTP 500 when error occurred during fetching of persons") {
-                testApplication() {
+                testApplication {
                     application {
                         defaultModules {
                             single {

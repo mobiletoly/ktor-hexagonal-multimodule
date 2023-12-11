@@ -68,7 +68,11 @@ class TestDeleteAddressBookAdapters : AddressBookPersistSpec() {
                 loadedPersons.count() shouldBe 1
                 val loadedPerson = loadedPersons.first()
 
-                assertPerson(actual = loadedPerson, expected = addedPersons[1], expectedId = addedPersons[1].id!!)
+                assertPerson(
+                    actual = loadedPerson,
+                    expected = addedPersons[1],
+                    expectedId = addedPersons[1].id!!,
+                )
             }
 
             it("fail when delete person with non-existed id") {

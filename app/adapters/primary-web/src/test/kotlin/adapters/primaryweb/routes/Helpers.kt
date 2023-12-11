@@ -30,28 +30,29 @@ fun Application.defaultModules(moduleDeclaration: ModuleDeclaration = {}) {
             module {
                 single<GetDeploymentConfigPort> { getDeploymentConfigPortImpl }
                 moduleDeclaration()
-            }
+            },
         )
     }
     webBootstrap()
 }
 
-fun createPersonEntryWithPostalAddress(id: Long) = PersonEntry(
-    id = id,
-    firstName = "FirstName-$id",
-    lastName = "LastName-$id",
-    phoneNumber = "503-111-$id",
-    email = "email$id@example.com",
-    gender = PersonEntry.Gender.FEMALE,
-    age = 20 + id.toInt(),
-    postalAddress = PersonEntry.PostalAddress(
-        address1 = "Cool Street $id",
-        address2 = "Apt $id",
-        city = "Portland",
-        state = "OR",
-        country = "USA",
+fun createPersonEntryWithPostalAddress(id: Long): PersonEntry =
+    PersonEntry(
+        id = id,
+        firstName = "FirstName-$id",
+        lastName = "LastName-$id",
+        phoneNumber = "503-111-$id",
+        email = "email$id@example.com",
+        gender = PersonEntry.Gender.FEMALE,
+        age = 20 + id.toInt(),
+        postalAddress = PersonEntry.PostalAddress(
+            address1 = "Cool Street $id",
+            address2 = "Apt $id",
+            city = "Portland",
+            state = "OR",
+            country = "USA",
+        ),
     )
-)
 
 fun RestPersonResponse.testPersonWithPostalAddress(id: Long, expected: RestPersonResponse) {
     id shouldBe expected.id

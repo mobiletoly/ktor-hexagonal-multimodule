@@ -17,7 +17,7 @@ fun newHttpClient(): HttpClient {
             json(
                 Json {
                     ignoreUnknownKeys = true
-                }
+                },
             )
         }
         install(Logging) {

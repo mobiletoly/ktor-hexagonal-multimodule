@@ -28,7 +28,7 @@ internal class LoadPersonAdapter(
         val postalAddressSqlEntity = postalAddressRepo.getByPersonIdOrNull(id)
         return PersonEntry.fromEntity(
             personSqlEntity = personSqlEntity,
-            postalAddressSqlEntity = postalAddressSqlEntity
+            postalAddressSqlEntity = postalAddressSqlEntity,
         )
     }
 
@@ -44,7 +44,7 @@ internal class LoadPersonAdapter(
                 val postalAddressSqlEntity = postalAddressSqlEntitiesMap[personSqlEntity.id!!]
                 PersonEntry.fromEntity(
                     personSqlEntity = personSqlEntity,
-                    postalAddressSqlEntity = postalAddressSqlEntity
+                    postalAddressSqlEntity = postalAddressSqlEntity,
                 )
             }
     }

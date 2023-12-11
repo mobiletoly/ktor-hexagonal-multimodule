@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class RandomPersonResponseDto(
     val results: List<Result>,
-    val info: Info
+    val info: Info,
 ) {
     @Serializable
     data class Result(
@@ -14,17 +14,17 @@ internal data class RandomPersonResponseDto(
         val location: Location,
         val dob: Dob,
         val email: String,
-        val phone: String
+        val phone: String,
     ) {
         @Serializable
         data class Name(
             val first: String,
-            val last: String
+            val last: String,
         )
 
         @Serializable
         data class Dob(
-            val age: Int
+            val age: Int,
         )
 
         @Serializable
@@ -32,18 +32,18 @@ internal data class RandomPersonResponseDto(
             val street: Street,
             val city: String,
             val state: String,
-            val country: String
+            val country: String,
         ) {
             @Serializable
             data class Street(
                 val number: Int,
-                val name: String
+                val name: String,
             )
         }
     }
 
     @Serializable
     data class Info(
-        val version: String
+        val version: String,
     )
 }

@@ -35,7 +35,9 @@ fun PostgreSQLContainer<Nothing>.createDatabaseConfigPort(): GetDatabaseConfigPo
     }
 }
 
-abstract class AddressBookPersistSpec(body: AddressBookPersistSpec.() -> Unit = {}) : DescribeSpec(), KoinTest {
+abstract class AddressBookPersistSpec(
+    body: AddressBookPersistSpec.() -> Unit = {},
+) : DescribeSpec(), KoinTest {
 
     private val postgresqlContainer = createPostgreSqlContainer()
 
@@ -77,7 +79,7 @@ fun createDefaultPerson(phoneNumber: String): PersonEntry {
             city = "Portland",
             state = "OR",
             country = "USA",
-        )
+        ),
     )
 }
 

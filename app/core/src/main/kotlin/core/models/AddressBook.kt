@@ -10,11 +10,11 @@ data class PersonEntry(
     val age: Int?,
     val phoneNumber: String,
     val email: String,
-    val postalAddress: PostalAddress?
+    val postalAddress: PostalAddress?,
 ) {
     enum class Gender {
         MALE,
-        FEMALE
+        FEMALE,
     }
 
     data class PostalAddress(
@@ -22,7 +22,7 @@ data class PersonEntry(
         val address2: String?,
         val city: String,
         val state: String,
-        val country: String
+        val country: String,
     ) {
         companion object
     }
@@ -31,11 +31,11 @@ data class PersonEntry(
 }
 
 class PersonEntryNotFoundException(
-    searchCriteria: String
+    searchCriteria: String,
 ) : ResourceNotFoundException(
     title = "Requested person not found",
     detail = "Person entry not found for search criteria: $searchCriteria",
     specifics = mapOf(
-        "searchCriteria" to searchCriteria
-    )
+        "searchCriteria" to searchCriteria,
+    ),
 )

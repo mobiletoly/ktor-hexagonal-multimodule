@@ -7,7 +7,7 @@ import adapters.primaryweb.util.RestInternalServerError
 import adapters.primaryweb.util.respondRestException
 import com.github.michaelbull.logging.InlineLogger
 import common.log.setXRequestId
-import common.log.xRequestIdLogKey
+import common.log.X_REQUEST_ID_LOG_KEY
 import core.errors.DomainException
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
@@ -32,7 +32,6 @@ import java.util.UUID
 private val logger = InlineLogger()
 
 fun Application.webBootstrap() {
-
     install(ContentNegotiation) {
         json()
     }
@@ -40,7 +39,7 @@ fun Application.webBootstrap() {
     install(CallLogging) {
         level = Level.DEBUG
         filter { call -> call.request.path().startsWith("/") }
-        mdc(xRequestIdLogKey) { call ->
+        mdc(X_REQUEST_ID_LOG_KEY) { call ->
             call.response.headers[HttpHeaders.XRequestId]
         }
     }
@@ -81,18 +80,22 @@ fun Application.webBootstrap() {
             logger.error(e) { "StatusPages/exception(): Error to be returned to a caller" }
             when (e) {
                 is DomainException -> {
-                    val errorResponse = e.toRestGenericException().toRestErrorResponse(path = call.request.uri)
+                    val errorResponse = e.toRestGenericException().toRestErrorResponse(
+                        path = call.request.uri,
+                    )
                     call.respond(
                         status = HttpStatusCode.fromValue(errorResponse.status),
-                        message = errorResponse
+                        message = errorResponse,
                     )
                 }
+
                 is RestGenericException -> {
                     call.respondRestException(e)
                 }
+
                 else -> {
                     call.respondRestException(
-                        RestInternalServerError(detail = e.message ?: e.toString())
+                        RestInternalServerError(detail = e.message ?: e.toString()),
                     )
                 }
             }

@@ -9,5 +9,5 @@ open class DomainException(
     val errorType: String,
     val title: String,
     val detail: String,
-    val specifics: Map<String, String?>?
+    val specifics: Map<String, String?>?,
 ) : RuntimeException(detail)

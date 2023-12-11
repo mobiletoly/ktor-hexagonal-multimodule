@@ -391,7 +391,7 @@ you can import it into Postman if you want to manually call app's REST APIs.
 
 To generate a coverage report in HTML format you must run:
 
-    $ ./gradlew build koverMergedHtmlReport
+    $ ./gradlew build koverHtmlReport
 
 It will run unit tests and generate coverage report in HTML format into project's directory:
 `./app/adapters/persist/build/reports/kover/merged/html/index.html`

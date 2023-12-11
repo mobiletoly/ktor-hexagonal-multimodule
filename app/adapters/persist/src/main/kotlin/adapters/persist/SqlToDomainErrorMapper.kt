@@ -10,7 +10,7 @@ internal fun ExposedSQLException.throwAsDomainException(inspector: DatabaseError
         DatabaseErrorState.DUPLICATE_KEY_VALUE_VIOLATES_UNIQUE_CONSTRAINT ->
             throw ResourceAlreadyExistsException(
                 title = "Resource already exists",
-                detail = this.message ?: this.toString()
+                detail = this.message ?: this.toString(),
             )
         else ->
             throw this

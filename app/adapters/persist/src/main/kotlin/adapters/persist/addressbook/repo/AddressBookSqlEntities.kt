@@ -7,7 +7,7 @@ import org.jetbrains.exposed.sql.Table
 
 internal enum class GenderSqlType {
     MALE,
-    FEMALE
+    FEMALE,
 }
 
 // --- TABLES
@@ -53,7 +53,7 @@ internal data class PersonSqlEntity(
     val gender: GenderSqlType?,
     val age: Int?,
     val phoneNumber: String,
-    val email: String
+    val email: String,
 ) {
     companion object
 }
@@ -65,7 +65,7 @@ internal data class PostalAddressSqlEntity(
     val address2: String?,
     val city: String,
     val state: String,
-    val country: String
+    val country: String,
 ) {
     companion object
 }

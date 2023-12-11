@@ -109,7 +109,11 @@ class TestSaveAddressBookAdapters : AddressBookPersistSpec() {
                 val updatedPerson = txPort.withNewTransaction {
                     updatePersonPort.updatePerson(personToUpdate)
                 }
-                assertPerson(actual = updatedPerson, expected = personToUpdate, expectedId = personToUpdate.id)
+                assertPerson(
+                    actual = updatedPerson,
+                    expected = personToUpdate,
+                    expectedId = personToUpdate.id,
+                )
             }
             it("fail when update person with non-existing id") {
                 val addedPerson = txPort.withNewTransaction {
@@ -136,7 +140,7 @@ class TestSaveAddressBookAdapters : AddressBookPersistSpec() {
                 }
                 e.message shouldBe "entity.id must not be null"
             }
-            it("fail when attempt to update person with phone number already existing in another person") {
+            it("fail when attempt to update person with phone already existing in another person") {
                 val personToAdd = createDefaultPerson(phoneNumber = "+1-503-333-4444")
                 txPort.withNewTransaction {
                     addPersonPort.addPerson(personToAdd)
@@ -167,7 +171,7 @@ class TestSaveAddressBookAdapters : AddressBookPersistSpec() {
                 val personToAdd2 = createDefaultPerson(phoneNumber = "+1-503-333-5555").copy(
                     firstName = "NewFirstName",
                     lastName = "NewLastName",
-                    email = "email2@gmail.com"
+                    email = "email2@gmail.com",
                 )
                 val updatedPerson2 = txPort.withNewTransaction {
                     addPersonPort.addPerson(personToAdd2)

@@ -10,7 +10,6 @@ val kotestKtorVersion: String by rootProject
 plugins {
     id("org.jetbrains.kotlin.jvm")
     id("org.jlleitschuh.gradle.ktlint")
-    id("org.jlleitschuh.gradle.ktlint-idea")
     id("org.jetbrains.kotlinx.kover")
 }
 
@@ -41,10 +40,6 @@ tasks.withType<Test>().configureEach {
 }
 
 configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-    // I don't like when linter complains that ${i} must be replaced to $i in string templates.
-    // I personally think that template "email${i}@example.com" is easier to read than "email$i@example.com"
-    this.disabledRules.add("string-template")
-
     verbose.set(true)
     outputToConsole.set(true)
     filter {
@@ -54,5 +49,13 @@ configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
 
 koverMerged {
     // true to disable instrumentation and all Kover tasks in this project
-    enable()
+//    enable()
+    dependencies {
+        kover(project(":app:core"))
+        kover(project(":app:infra"))
+        kover(project(":app:adapters:env"))
+        kover(project(":app:adapters:persist"))
+        kover(project(":app:adapters:primary-web"))
+        kover(project(":app:adapters:remoting"))
+    }
 }

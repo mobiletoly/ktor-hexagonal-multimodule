@@ -19,11 +19,11 @@ internal open class RestGenericException(
         instance = path,
         specifics = specifics?.map { (key, value) ->
             RestErrorSpecificsResponse(key = key, value = value?.toString())
-        }
+        },
     )
 
     override fun toString() = "$this type=\"$type\", title=\"$title\", status=\"$status\", " +
-        "detail=\"$detail\", specifics=$specifics"
+            "detail=\"$detail\", specifics=$specifics"
 }
 
 internal class RestBadInputException(message: String) : RestGenericException(
@@ -46,8 +46,8 @@ internal data class RestMissingRequestParameterException(
     status = HttpStatusCode.BadRequest,
     detail = "Parameter \"$paramName\" must be provided in request",
     specifics = mapOf(
-        "paramName" to paramName
-    )
+        "paramName" to paramName,
+    ),
 ) {
     companion object {
         const val ERROR_TYPE = "/errors/missing-request-parameter"
@@ -63,31 +63,27 @@ internal data class RestInvalidRequestParameterFormatException(
     status = HttpStatusCode.BadRequest,
     detail = detail,
     specifics = mapOf(
-        "paramName" to paramName
-    )
+        "paramName" to paramName,
+    ),
 ) {
     companion object {
         const val ERROR_TYPE = "/errors/invalid-request-parameter-format"
     }
 }
 
-internal class RestExternalServiceCallException(
-    specifics: Map<String, Any?>
-) : RestGenericException(
+internal class RestExternalServiceCallException(specifics: Map<String, Any?>) : RestGenericException(
     type = ERROR_TYPE,
     title = "Error performing external service call",
     status = HttpStatusCode.ServiceUnavailable,
     detail = "External service call response needs to be inspected for error details",
-    specifics = specifics
+    specifics = specifics,
 ) {
     companion object {
         const val ERROR_TYPE = "/errors/external-service-call"
     }
 }
 
-internal class RestInternalServerError(
-    detail: String,
-) : RestGenericException(
+internal class RestInternalServerError(detail: String) : RestGenericException(
     type = ERROR_TYPE,
     title = "Internal server error occurred",
     status = HttpStatusCode.InternalServerError,

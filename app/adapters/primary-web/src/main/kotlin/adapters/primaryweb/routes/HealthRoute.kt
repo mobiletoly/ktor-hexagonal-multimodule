@@ -18,10 +18,11 @@ internal fun Routing.healthRoute() {
             status = HttpStatusCode.OK,
             message = RestHealthResponse(
                 status = "success",
-                version = "env=${deployment.env} version=${deployment.version} build=${deployment.buildNumber}",
+                version = "env=${deployment.env} version=${deployment.version} " +
+                        "build=${deployment.buildNumber}",
                 remoteService = "success",
                 database = "success",
-            )
+            ),
         )
     }
 }
